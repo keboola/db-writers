@@ -10,7 +10,7 @@ readonly class ExportConfig
     /**
      * @param $config array{
      *     data_dir: string,
-     *     extractor_class: string,
+     *     writer_class: string,
      *     db: array,
      *     tableId: string,
      *     dbName: string,
@@ -25,7 +25,7 @@ readonly class ExportConfig
     {
         return new self(
             $config['data_dir'],
-            $config['extractor_class'],
+            $config['writer_class'],
             DatabaseConfig::fromArray($config['db']),
             $config['tableId'],
             $config['dbName'],
@@ -42,7 +42,7 @@ readonly class ExportConfig
      */
     public function __construct(
         private string $dataDir,
-        private string $extractorClass,
+        private string $writerClass,
         private DatabaseConfig $databaseConfig,
         private string $tableId,
         private string $dbName,
@@ -58,9 +58,9 @@ readonly class ExportConfig
         return $this->dataDir;
     }
 
-    public function getExtractorClass(): string
+    public function getWriterClass(): string
     {
-        return $this->extractorClass;
+        return $this->writerClass;
     }
 
     public function getDatabaseConfig(): DatabaseConfig

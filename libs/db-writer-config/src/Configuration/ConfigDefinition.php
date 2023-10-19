@@ -44,7 +44,7 @@ class ConfigDefinition extends BaseConfigDefinition
                     ->isRequired()
                     ->cannotBeEmpty()
                 ->end()
-                ->scalarNode('extractor_class')
+                ->scalarNode('writer_class')
                     ->isRequired()
                     ->cannotBeEmpty()
                 ->end()
