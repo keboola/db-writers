@@ -15,11 +15,15 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 class ConfigDefinition extends BaseConfigDefinition
 {
+    protected TableNodesDecorator $tableNodesDecorator;
+
+    protected DbNode $dbNode;
+
     public function __construct(
-        protected ?DbNode $dbNode = null,
+        ?DbNode $dbNode = null,
         readonly protected ?SshNode $sshNode = null,
         readonly protected ?SslNode $sslNode = null,
-        protected ?TableNodesDecorator $tableNodesDecorator = null,
+        ?TableNodesDecorator $tableNodesDecorator = null,
     ) {
         $this->dbNode = $dbNode ?? new DbNode($sshNode, $sslNode);
         $this->tableNodesDecorator = $tableNodesDecorator ?? new TableNodesDecorator();
@@ -49,7 +53,7 @@ class ConfigDefinition extends BaseConfigDefinition
         // @formatter:on
 
         // Add common nodes for tables/rows config
-        $tablesItemNode = $parametersNode->children()->arrayNode('tables')->prototype('array');
+        $tablesItemNode = $parametersNode->children()->arrayNode('tables')->arrayPrototype();
         $this->tableNodesDecorator->addNodes($tablesItemNode->children());
 //        $tablesItemNode->validate()->always(fn($v) => $this->tableNodesDecorator->validate($v));
 

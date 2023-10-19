@@ -7,7 +7,7 @@ namespace Keboola\DbWriterConfig\Configuration\ValueObject;
 readonly class SshConfig
 {
     /**
-     * @param array{
+     * @param $config array{
      *     'enabled': bool,
      *     'keys': array,
      *     'sshHost': string,
@@ -16,7 +16,7 @@ readonly class SshConfig
      *     'remotePort': int,
      *     'localPort': int,
      *     'user': string
-     * } $config
+     * }
      */
     public static function fromArray(array $config): self
     {

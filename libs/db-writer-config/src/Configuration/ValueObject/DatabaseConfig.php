@@ -18,7 +18,15 @@ readonly class DatabaseConfig
     }
 
     /**
-     * @param mixed[] $config
+     * @param $config array{
+     *     host: string,
+     *     port: int,
+     *     database: string,
+     *     user: string,
+     *     "#password": string,
+     *     schema: string,
+     *     ssh: array
+     * }
      */
     public static function fromArray(array $config): self
     {
@@ -27,7 +35,7 @@ readonly class DatabaseConfig
             $config['port'],
             $config['database'],
             $config['user'],
-            $config['password'],
+            $config['#password'],
             $config['schema'],
             SshConfig::fromArray($config['ssh']),
         );

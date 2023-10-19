@@ -7,7 +7,14 @@ namespace Keboola\DbWriterConfig\Configuration\ValueObject;
 readonly class ItemConfig
 {
     /**
-     * @param mixed[] $config
+     * @param $config array{
+     *     name: string,
+     *     dbName: string,
+     *     type: string,
+     *     size?: string,
+     *     nullable?: string,
+     *     default?: string,
+     * }
      */
     public static function fromArray(array $config): self
     {

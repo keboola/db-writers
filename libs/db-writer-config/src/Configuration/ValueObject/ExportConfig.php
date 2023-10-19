@@ -8,7 +8,18 @@ readonly class ExportConfig
 {
 
     /**
-     * @param mixed[] $config
+     * @param $config array{
+     *     data_dir: string,
+     *     extractor_class: string,
+     *     db: array,
+     *     tableId: string,
+     *     dbName: string,
+     *     incremental: bool,
+     *     export: bool,
+     *     primary_key: string[],
+     *     items: array
+     * }
+     *
      */
     public function fromArray(array $config): self
     {
