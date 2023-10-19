@@ -12,7 +12,7 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
-class ActionConfigRowDefinition extends BaseConfigDefinition
+class ActionConfigDefinition extends BaseConfigDefinition
 {
     protected NodeDefinition $dbNode;
 

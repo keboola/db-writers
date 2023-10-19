@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Keboola\DbWriterConfig\Configuration\ValueObject;
 
+use Keboola\DbWriterConfig\Exception\PropertyNotSetException;
+
 readonly class ExportConfig
 {
 
@@ -14,9 +16,9 @@ readonly class ExportConfig
      *     db: array,
      *     tableId: string,
      *     dbName: string,
-     *     incremental: bool,
-     *     export: bool,
-     *     primary_key: string[],
+     *     incremental?: bool,
+     *     export?: bool,
+     *     primary_key?: string[],
      *     items: array
      * }
      *
@@ -29,9 +31,9 @@ readonly class ExportConfig
             DatabaseConfig::fromArray($config['db']),
             $config['tableId'],
             $config['dbName'],
-            $config['incremental'],
-            $config['export'],
-            $config['primary_key'],
+            $config['incremental'] ?? false,
+            $config['export'] ?? true,
+            $config['primary_key'] ?? null,
             array_map(fn($v) => ItemConfig::fromArray($v), $config['items']),
         );
     }
@@ -48,7 +50,7 @@ readonly class ExportConfig
         private string $dbName,
         private bool $incremental,
         private bool $export,
-        private array $primaryKey,
+        private ?array $primaryKey,
         private array $items,
     ) {
     }
@@ -88,11 +90,20 @@ readonly class ExportConfig
         return $this->export;
     }
 
+    public function hasPrimaryKey(): bool
+    {
+        return $this->primaryKey !== null;
+    }
+
     /**
      * @return string[]
+     * @throws PropertyNotSetException
      */
     public function getPrimaryKey(): array
     {
+        if ($this->primaryKey === null) {
+            throw new PropertyNotSetException('Property "primaryKey" is not set.');
+        }
         return $this->primaryKey;
     }
 

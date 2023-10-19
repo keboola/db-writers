@@ -4,25 +4,27 @@ declare(strict_types=1);
 
 namespace Keboola\DbWriterConfig\Configuration\ValueObject;
 
+use Keboola\DbWriterConfig\Exception\PropertyNotSetException;
+
 readonly class DatabaseConfig
 {
     public function __construct(
-        private string $host,
-        private int $port,
+        private ?string $host,
+        private ?string $port,
         private string $database,
         private string $user,
-        private string $password,
-        private string $schema,
-        private SshConfig $sshConfig,
+        private ?string $password,
+        private ?string $schema,
+        private ?SshConfig $sshConfig,
     ) {
     }
 
     /**
      * @param $config array{
      *     host: string,
-     *     port: int,
-     *     database: string,
-     *     user: string,
+     *     port: string,
+     *     database?: string,
+     *     user?: string,
      *     "#password": string,
      *     schema: string,
      *     ssh: array
@@ -30,24 +32,63 @@ readonly class DatabaseConfig
      */
     public static function fromArray(array $config): self
     {
+        $sshEnabled = $config['ssh']['enabled'] ?? false;
+
         return new self(
-            $config['host'],
-            $config['port'],
+            $config['host'] ?? null,
+            $config['port'] ?? null,
             $config['database'],
             $config['user'],
-            $config['#password'],
-            $config['schema'],
-            SshConfig::fromArray($config['ssh']),
+            $config['#password'] ?? null,
+            $config['schema'] ?? null,
+            $sshEnabled ? SshConfig::fromArray($config['ssh']) : null,
         );
     }
 
+    public function hasHost(): bool
+    {
+        return $this->host !== null;
+    }
+
+    public function hasPort(): bool
+    {
+        return $this->port !== null;
+    }
+
+    public function hasPassword(): bool
+    {
+        return $this->password !== null;
+    }
+
+    public function hasSchema(): bool
+    {
+        return $this->schema !== null;
+    }
+
+    public function hasSshConfig(): bool
+    {
+        return $this->sshConfig !== null;
+    }
+
+    /**
+     * @throws PropertyNotSetException
+     */
     public function getHost(): string
     {
+        if ($this->host === null) {
+            throw new PropertyNotSetException('Property "host" is not set.');
+        }
         return $this->host;
     }
 
-    public function getPort(): int
+    /**
+     * @throws PropertyNotSetException
+     */
+    public function getPort(): string
     {
+        if ($this->port === null) {
+            throw new PropertyNotSetException('Property "port" is not set.');
+        }
         return $this->port;
     }
 
@@ -61,18 +102,36 @@ readonly class DatabaseConfig
         return $this->user;
     }
 
+    /**
+     * @throws PropertyNotSetException
+     */
     public function getPassword(): string
     {
+        if ($this->password === null) {
+            throw new PropertyNotSetException('Property "password" is not set.');
+        }
         return $this->password;
     }
 
+    /**
+     * @throws PropertyNotSetException
+     */
     public function getSchema(): string
     {
+        if ($this->schema === null) {
+            throw new PropertyNotSetException('Property "schema" is not set.');
+        }
         return $this->schema;
     }
 
+    /**
+     * @throws PropertyNotSetException
+     */
     public function getSshConfig(): SshConfig
     {
+        if ($this->sshConfig === null) {
+            throw new PropertyNotSetException('Property "sshConfig" is not set.');
+        }
         return $this->sshConfig;
     }
 }
