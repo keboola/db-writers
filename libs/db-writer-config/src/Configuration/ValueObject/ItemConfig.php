@@ -14,7 +14,7 @@ readonly class ItemConfig
      *     dbName: string,
      *     type: string,
      *     size?: string,
-     *     nullable?: string,
+     *     nullable?: bool,
      *     default?: string,
      * }
      */
@@ -35,7 +35,7 @@ readonly class ItemConfig
         private string $dbName,
         private string $type,
         private ?string $size,
-        private ?string $nullable,
+        private ?bool $nullable,
         private ?string $default,
     ) {
     }
@@ -70,7 +70,10 @@ readonly class ItemConfig
         return $this->type;
     }
 
-    public function getSize(): ?string
+    /**
+     * @throws PropertyNotSetException
+     */
+    public function getSize(): string
     {
         if ($this->size === null) {
             throw new PropertyNotSetException('Property "size" is not set.');
@@ -78,7 +81,10 @@ readonly class ItemConfig
         return $this->size;
     }
 
-    public function getNullable(): ?string
+    /**
+     * @throws PropertyNotSetException
+     */
+    public function getNullable(): bool
     {
         if ($this->nullable === null) {
             throw new PropertyNotSetException('Property "nullable" is not set.');
@@ -86,7 +92,10 @@ readonly class ItemConfig
         return $this->nullable;
     }
 
-    public function getDefault(): ?string
+    /**
+     * @throws PropertyNotSetException
+     */
+    public function getDefault(): string
     {
         if ($this->default === null) {
             throw new PropertyNotSetException('Property "default" is not set.');

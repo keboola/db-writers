@@ -21,13 +21,13 @@ readonly class DatabaseConfig
 
     /**
      * @param $config array{
-     *     host: string,
-     *     port: string,
-     *     database?: string,
-     *     user?: string,
-     *     "#password": string,
-     *     schema: string,
-     *     ssh: array
+     *     host?: string,
+     *     port?: string,
+     *     database: string,
+     *     user: string,
+     *     "#password"?: string,
+     *     schema?: string,
+     *     ssh?: array
      * }
      */
     public static function fromArray(array $config): self

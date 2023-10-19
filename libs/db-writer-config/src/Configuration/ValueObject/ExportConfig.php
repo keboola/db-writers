@@ -23,7 +23,7 @@ readonly class ExportConfig
      * }
      *
      */
-    public function fromArray(array $config): self
+    public static function fromArray(array $config): self
     {
         return new self(
             $config['data_dir'],

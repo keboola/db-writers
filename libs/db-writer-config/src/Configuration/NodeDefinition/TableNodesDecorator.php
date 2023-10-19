@@ -52,7 +52,7 @@ class TableNodesDecorator implements DecoratorInterface
                     ->scalarNode('name')->isRequired()->cannotBeEmpty()->end()
                     ->scalarNode('dbName')->isRequired()->cannotBeEmpty()->end()
                     ->scalarNode('type')->isRequired()->cannotBeEmpty()->end()
-                    ->scalarNode('size')->end()
+                    ->booleanNode('size')->end()
                     ->scalarNode('nullable')->end()
                     ->scalarNode('default')->end()
                 ->end()
