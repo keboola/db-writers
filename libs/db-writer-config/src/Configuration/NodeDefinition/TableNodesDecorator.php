@@ -40,7 +40,7 @@ class TableNodesDecorator implements DecoratorInterface
 
     protected function addPrimaryKeyNode(NodeBuilder $nodeBuilder): void
     {
-        $nodeBuilder->arrayNode('primaryKey')->prototype('scalar')->end();
+        $nodeBuilder->arrayNode('primaryKey')->prototype('scalar')->cannotBeEmpty()->end();
     }
 
     protected function addItemsNode(NodeBuilder $nodeBuilder): void
