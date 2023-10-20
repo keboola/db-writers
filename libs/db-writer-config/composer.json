@@ -1,6 +1,12 @@
 {
     "name": "keboola/db-writer-config",
-    "description": "MyComponent description",
+    "description": "Config definition for database writer component",
+    "authors": [
+        {
+            "name": "Keboola",
+            "email": "devel@keboola.com"
+        }
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
