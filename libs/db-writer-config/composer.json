@@ -1,5 +1,5 @@
 {
-    "name": "keboola/my-component",
+    "name": "keboola/db-writer-config",
     "description": "MyComponent description",
     "license": "MIT",
     "require": {
