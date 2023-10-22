@@ -7,11 +7,12 @@ namespace Keboola\DbWriter\Writer;
 use Keboola\DbWriter\Exception\UserException;
 use Keboola\DbWriter\Writer;
 use Keboola\DbWriter\WriterInterface;
+use Keboola\DbWriterConfig\Configuration\ValueObject\DatabaseConfig;
 use PDO;
 use PDOException;
 use SplFileInfo;
 
-class Common extends Writer implements WriterInterface
+class Common extends BaseWriter
 {
     /** @var array */
     protected static array $allowedTypes = [
@@ -202,7 +203,7 @@ class Common extends Writer implements WriterInterface
         return static::$allowedTypes;
     }
 
-    public function showTables(string $dbName): array
+    public function showTables(DatabaseConfig $databaseConfig): array
     {
         $stmt = $this->db->query('SHOW TABLES');
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -15,7 +15,7 @@ use Retry\Policy\SimpleRetryPolicy;
 use Retry\RetryProxy;
 use Throwable;
 
-abstract class Writer implements WriterInterface
+abstract class Writer
 {
     public const SSH_MAX_TRIES = 5;
 

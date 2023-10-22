@@ -4,228 +4,56 @@ declare(strict_types=1);
 
 namespace Keboola\DbWriter;
 
-use ErrorException;
-use Keboola\Component\Logger\AsyncActionLogging;
-use Keboola\Component\Logger\SyncActionLogging;
-use Keboola\DbWriter\Configuration\ConfigDefinition;
-use Keboola\DbWriter\Configuration\ConfigRowDefinition;
-use Keboola\DbWriter\Configuration\Validator;
+use Keboola\Component\BaseComponent;
 use Keboola\DbWriter\Exception\ApplicationException;
+use Keboola\DbWriter\Exception\InvalidDatabaseHostException;
 use Keboola\DbWriter\Exception\UserException;
-use PDOException;
-use Pimple\Container;
+use Keboola\DbWriterConfig\Configuration\ValueObject\DatabaseConfig;
+use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
 use Psr\Log\LoggerInterface;
-use SplFileInfo;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Throwable;
 
-class Application extends Container
+class Application extends BaseComponent
 {
-    public function __construct(
-        array $config,
-        LoggerInterface $logger,
-        ?ConfigurationInterface $configDefinition = null
-    ) {
-        parent::__construct();
+    /**
+     * @throws InvalidDatabaseHostException
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        parent::__construct($logger);
+        $this->checkDatabaseHost();
+    }
 
-        if (isset($config['image_parameters']) && isset($config['image_parameters']['approvedHostnames'])) {
-            $this->validateHostname(
-                $config['image_parameters']['approvedHostnames'],
-                $config['parameters']['db']
-            );
-        }
+    /**
+     * @throws UserException|ApplicationException
+     */
+    public function run(): void
+    {
+        $parameters = $this->getConfig()->getParameters();
+        $writerFactory = new WriterFactory($this->getConfig());
+        $writer = $writerFactory->create($this->getLogger());
 
-        $app = $this;
-
-        static::setEnvironment();
-
-        if ($configDefinition === null) {
-            if (isset($config['parameters']['tables'])) {
-                $configDefinition = new ConfigDefinition();
-            } else {
-                $configDefinition = new ConfigRowDefinition();
-            }
-        }
-        $validate = Validator::getValidator($configDefinition);
-
-        $this['inputMapping'] = $config['storage']['input'] ?? null;
-        $this['action'] = isset($config['action'])?$config['action']:'run';
-        $this['parameters'] = $validate($config['parameters']);
-        $this['logger'] = $logger;
-        $this['writer'] = function () use ($app) {
-            return $this->getWriterFactory($app['parameters'])->create($app['logger']);
-        };
-
-        // Setup logger, copied from php-component/src/BaseComponent.php
-        // Will be removed in next refactoring steps,
-        // ... when Application will be replace by standard BaseComponent
-        if ($this['action'] !== 'run') { // $this->isSyncAction()
-            if ($this['logger'] instanceof SyncActionLogging) {
-                $this['logger']->setupSyncActionLogging();
+        if (!$this->isRowConfiguration($parameters)) {
+            $filteredTables = array_filter($parameters['tables'], fn($table) => $table['export']);
+            foreach ($filteredTables as $filteredTable) {
+                $filteredTable = $this->validateTableItems($filteredTable);
+                $writer->write($this->createExportConfig($filteredTable));
             }
         } else {
-            if ($this['logger']instanceof AsyncActionLogging) {
-                $this['logger']->setupAsyncActionLogging();
-            }
+            $parameters = $this->validateTableItems($parameters);
+            $writer->write($this->createExportConfig($parameters));
         }
     }
 
-    public static function setEnvironment(): void
-    {
-        error_reporting(E_ALL);
-        set_error_handler(function ($errno, $errstr, $errfile, $errline, array $errcontext): bool {
-            if (!(error_reporting() & $errno)) {
-                // respect error_reporting() level
-                // libraries used in custom components may emit notices that cannot be fixed
-                return false;
-            }
-            throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
-        });
-    }
-
-    public function run(): string
-    {
-        $actionMethod = $this['action'] . 'Action';
-        if (!method_exists($this, $actionMethod)) {
-            throw new UserException(sprintf("Action '%s' does not exist.", $this['action']));
-        }
-
-        return $this->$actionMethod();
-    }
-
-    public function runAction(): string
-    {
-        if (isset($this['parameters']['tables'])) {
-            $tables = array_filter($this['parameters']['tables'], function ($table) {
-                return ($table['export']);
-            });
-            foreach ($tables as $tableConfig) {
-                $this->runWriteTable($tableConfig);
-            }
-        } else {
-            $this->runWriteTable($this['parameters']);
-        }
-
-        return 'Writer finished successfully';
-    }
-
-    protected function runWriteTable(array $tableConfig): void
-    {
-        $csv = $this->getInputCsv($tableConfig['tableId']);
-        $tableConfig['items'] = $this->reorderColumns($csv, $tableConfig['items']);
-
-        $export = isset($tableConfig['export']) ? $tableConfig['export'] : true;
-        if (empty($tableConfig['items']) || $export === false) {
-            return;
-        }
-
-        try {
-            if (isset($tableConfig['incremental']) && $tableConfig['incremental']) {
-                $this->writeIncremental($csv, $tableConfig);
-            } else {
-                $this->writeFull($csv, $tableConfig);
-            }
-        } catch (PDOException $e) {
-            throw new UserException($e->getMessage(), 0, $e);
-        } catch (UserException $e) {
-            throw $e;
-        } catch (Throwable $e) {
-            throw new ApplicationException($e->getMessage(), 2, $e);
-        }
-    }
-
-    public function writeIncremental(SplFileInfo $csv, array $tableConfig): void
-    {
-        /** @var WriterInterface $writer */
-        $writer = $this['writer'];
-
-        // write to staging table
-        $stageTable = $tableConfig;
-        $stageTable['dbName'] = $writer->generateTmpName($tableConfig['dbName']);
-        $stageTable['temporary'] = true;
-
-        $writer->drop($stageTable['dbName']);
-        $writer->create($stageTable);
-        $writer->write($csv, $stageTable);
-
-        // create destination table if not exists
-        $dstTableExists = $writer->tableExists($tableConfig['dbName']);
-        if (!$dstTableExists) {
-            $writer->create($tableConfig);
-        }
-        $writer->validateTable($tableConfig);
-
-        // upsert from staging to destination table
-        $writer->upsert($stageTable, $tableConfig['dbName']);
-    }
-
-    public function writeFull(SplFileInfo $csv, array $tableConfig): void
-    {
-        /** @var WriterInterface $writer */
-        $writer = $this['writer'];
-
-        $writer->drop($tableConfig['dbName']);
-        $writer->create($tableConfig);
-        $writer->write($csv, $tableConfig);
-    }
-
-    protected function reorderColumns(SplFileInfo $csv, array $items): array
-    {
-        $manifestPath = $csv->getPathname() . '.manifest';
-        if (!file_exists($manifestPath)) {
-            throw new ApplicationException(sprintf('Manifest "%s" not found.', $manifestPath));
-        }
-
-        $manifest = @json_decode((string) file_get_contents($manifestPath), true);
-        if (!$manifestPath) {
-            throw new ApplicationException(sprintf('Manifest "%s" is not valid JSON.', $manifestPath));
-        }
-
-        $csvHeader = $manifest['columns'];
-        $reordered = [];
-        foreach ($csvHeader as $csvCol) {
-            foreach ($items as $item) {
-                if ($csvCol === $item['name']) {
-                    $reordered[] = $item;
-                }
-            }
-        }
-
-        return $reordered;
-    }
-
-    protected function getInputCsv(string $tableId): SplFileInfo
-    {
-        $inputMapping = $this['inputMapping'];
-        if (!$inputMapping) {
-            throw new ApplicationException('Missing storage input mapping.');
-        }
-
-        $filteredStorageInputMapping = array_filter($inputMapping['tables'], function ($v) use ($tableId) {
-            return $v['source'] === $tableId;
-        });
-
-        if (count($filteredStorageInputMapping) === 0) {
-            throw new UserException(
-                sprintf('Table "%s" in storage input mapping cannot be found.', $tableId)
-            );
-        }
-
-        $filteredStorageInputMapping = array_values($filteredStorageInputMapping);
-
-        return new SplFileInfo(
-            sprintf(
-                '%s/in/tables/%s',
-                $this['parameters']['data_dir'],
-                $filteredStorageInputMapping[0]['destination']
-            )
-        );
-    }
-
+    /**
+     * @throws UserException
+     */
     public function testConnectionAction(): string
     {
+        $writerFactory = new WriterFactory($this->getConfig());
+        $writer = $writerFactory->create($this->getLogger());
         try {
-            $this['writer']->testConnection();
+            $writer->testConnection();
         } catch (Throwable $e) {
             throw new UserException(sprintf("Connection failed: '%s'", $e->getMessage()), 0, $e);
         }
@@ -235,13 +63,19 @@ class Application extends Container
         ]);
     }
 
+    /**
+     * @throws UserException
+     */
     public function getTablesInfoAction(): string
     {
-        $tables = $this['writer']->showTables($this['parameters']['db']['database']);
+        $writerFactory = new WriterFactory($this->getConfig());
+        $writer = $writerFactory->create($this->getLogger());
+
+        $tables = $writer->showTables(DatabaseConfig::fromArray($this->getConfig()->getParameters()['db']));
 
         $tablesInfo = [];
         foreach ($tables as $tableName) {
-            $tablesInfo[$tableName] = $this['writer']->getTableInfo($tableName);
+            $tablesInfo[$tableName] = $writer->getTableInfo($tableName);
         }
 
         return json_encode([
@@ -250,25 +84,70 @@ class Application extends Container
         ]);
     }
 
-    protected function getWriterFactory(array $parameters): WriterFactory
+    protected function createExportConfig(array $table): ExportConfig
     {
-        return new WriterFactory($parameters);
+        return ExportConfig::fromArray($table);
     }
 
-    protected function validateHostname(array $approvedHostnames, array $db): void
+    protected function getSyncActions(): array
     {
-        $validHostname = array_filter($approvedHostnames, function ($v) use ($db) {
-            return $v['host'] === $db['host'] && $v['port'] === $db['port'];
+        return [
+            'testConnection' => 'testConnectionAction',
+            'getTablesInfo' => 'getTablesInfoAction',
+        ];
+    }
+
+    protected function getValidator(): Validator
+    {
+        return new Validator($this->getLogger(), $this->getConfig());
+    }
+
+    private function getInputTablePath(string $tableId): string
+    {
+        $inputMapping = $this->getConfig()->getInputTables();
+        if (!$inputMapping) {
+            throw new ApplicationException('Missing storage input mapping.');
+        }
+
+        $filteredStorageInputMapping = array_filter($inputMapping, function ($v) use ($tableId) {
+            return $v['source'] === $tableId;
         });
 
-        if (count($validHostname) === 0) {
+        if (count($filteredStorageInputMapping) === 0) {
             throw new UserException(
-                sprintf(
-                    'Hostname "%s" with port "%s" is not approved.',
-                    $db['host'],
-                    $db['port']
-                )
+                sprintf('Table "%s" in storage input mapping cannot be found.', $tableId)
             );
         }
+
+        $tableFromInputMapping = current($filteredStorageInputMapping);
+
+        return sprintf(
+            '%s/in/tables/%s',
+            $this->getDataDir(),
+            $tableFromInputMapping['destination']
+        );
+    }
+
+    /**
+     * @throws InvalidDatabaseHostException
+     */
+    private function checkDatabaseHost(): void
+    {
+        $checker = $this->getValidator();
+        $checker->validateDatabaseHost();
+    }
+
+    private function isRowConfiguration(array $parameters): bool
+    {
+        return !isset($parameters['tables']);
+    }
+
+    /**
+     * @throws UserException|ApplicationException
+     */
+    private function validateTableItems(array $table): array
+    {
+        $validator = $this->getValidator();
+        return $validator->validateTableItems($this->getInputTablePath($table['tableId']), $table['items']);
     }
 }
