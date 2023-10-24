@@ -90,4 +90,36 @@ readonly class SshConfig
     {
         return $this->user;
     }
+
+    /**
+     * @return array{
+     *     'enabled': bool,
+     *     'keys': array{
+     *         "#private": string,
+     *         'public': string
+     *     },
+     *     'sshHost': string,
+     *     'sshPort': int,
+     *     'remoteHost': string,
+     *     'remotePort': int,
+     *     'localPort': int,
+     *     'user': string
+     * }
+     */
+    public function toArray(): array
+    {
+        return [
+            'enabled' => $this->enabled,
+            'keys' => [
+                '#private' => $this->privateKey,
+                'public' => $this->publicKey,
+            ],
+            'sshHost' => $this->sshHost,
+            'sshPort' => $this->sshPort,
+            'remoteHost' => $this->remoteHost,
+            'remotePort' => $this->remotePort,
+            'localPort' => $this->localPort,
+            'user' => $this->user,
+        ];
+    }
 }

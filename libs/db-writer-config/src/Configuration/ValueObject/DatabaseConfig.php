@@ -134,4 +134,28 @@ readonly class DatabaseConfig
         }
         return $this->sshConfig;
     }
+
+    /**
+     * @return array{
+     *     host: string|null,
+     *     port: string|null,
+     *     database: string,
+     *     user: string,
+     *     "#password": ?string,
+     *     schema: string|null,
+     *     ssh: array|null
+     * }
+     */
+    public function toArray(): array
+    {
+        return [
+            'host' => $this->host,
+            'port' => $this->port,
+            'database' => $this->database,
+            'user' => $this->user,
+            '#password' => $this->password,
+            'schema' => $this->schema,
+            'ssh' => $this->hasSshConfig() ? $this->getSshConfig()->toArray() : null,
+        ];
+    }
 }
