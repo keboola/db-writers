@@ -40,7 +40,7 @@ abstract class Writer
         try {
             $this->db = $this->createConnection($this->dbParams);
         } catch (Throwable $e) {
-            if (strstr(strtolower($e->getMessage()), 'could not find driver')) {
+            if (str_contains(strtolower($e->getMessage()), 'could not find driver')) {
                 throw new ApplicationException('Missing driver: ' . $e->getMessage());
             }
             throw new UserException('Error connecting to DB: ' . $e->getMessage(), 0, $e);

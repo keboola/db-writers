@@ -20,8 +20,11 @@ readonly class Validator
      */
     public function validateDatabaseHost(): void
     {
-        $approvedHostnames = $this->config['image_parameters']['approvedHostnames'];
-        $db = $this->config['parameters']['db'];
+        if (!isset($this->config->getImageParameters()['approvedHostnames'])) {
+            return;
+        }
+        $approvedHostnames = $this->config->getImageParameters()['approvedHostnames'];
+        $db = $this->config->getParameters()['db'];
         $validHostname = array_filter($approvedHostnames, function ($v) use ($db) {
             return $v['host'] === $db['host'] && $v['port'] === $db['port'];
         });

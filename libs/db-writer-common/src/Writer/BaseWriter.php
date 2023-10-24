@@ -2,19 +2,40 @@
 
 namespace Keboola\DbWriter\Writer;
 
+use Keboola\DbWriter\Exception\SshException;
+use Keboola\DbWriter\Exception\UserException;
+use Keboola\DbWriterAdapter\Connection\Connection;
+use Keboola\DbWriterAdapter\WriteAdapter;
 use Keboola\DbWriterConfig\Configuration\ValueObject\DatabaseConfig;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
-use Keboola\DbWriterConfig\Configuration\ValueObject\ItemConfig;
-use SplFileInfo;
+use Keboola\DbWriterConfig\Exception\PropertyNotSetException;
+use Psr\Log\LoggerInterface;
 
 abstract class BaseWriter
 {
     protected Connection $connection;
 
-    public function __construct(DatabaseConfig $databaseConfig)
-    {
+    protected WriteAdapter $adapter;
+
+    /**
+     * @throws UserException|SshException|PropertyNotSetException
+     */
+    public function __construct(
+        DatabaseConfig $databaseConfig,
+        readonly protected LoggerInterface $logger
+    ) {
+        $databaseConfig = $this->createSshTunnel($databaseConfig);
         $this->connection = $this->createConnection($databaseConfig);
+        $this->adapter = $this->createWriteAdapter();
     }
+
+    abstract protected function createWriteAdapter(): WriteAdapter;
+
+    abstract public function getTableInfo(string $tableName): array;
+
+    abstract protected function createConnection(DatabaseConfig $databaseConfig): Connection;
+
+    abstract protected static function getAllowedTypes(): array;
 
     public function write(ExportConfig $exportConfig): void
     {
@@ -25,63 +46,45 @@ abstract class BaseWriter
         }
     }
 
-    abstract public function testConnection(): void;
-
-    abstract public function getTableInfo(string $tableName): array;
+    public function testConnection(): void
+    {
+        $this->connection->testConnection();
+    }
 
     protected function writeIncremental(ExportConfig $exportConfig): void
     {
         // write to staging table
-        $stageTableName = $this->generateTmpName($exportConfig->getDbName());
+        $stageTableName = $this->adapter->generateTmpName($exportConfig->getDbName());
 
-        $this->drop($stageTableName);
-        $this->create($stageTableName, true, $exportConfig->getItems());
-        $this->writeData($stageTableName, $exportConfig->getCsv());
+        $this->adapter->drop($stageTableName);
+        $this->adapter->create($stageTableName, true, $exportConfig->getItems());
+        $this->adapter->writeData($stageTableName, $exportConfig->getCsv());
 
         // create destination table if not exists
-        if (!$this->tableExists($exportConfig->getDbName())) {
-            $this->create($exportConfig->getDbName(), false, $exportConfig->getItems());
+        if (!$this->adapter->tableExists($exportConfig->getDbName())) {
+            $this->adapter->create($exportConfig->getDbName(), false, $exportConfig->getItems());
         }
-        $this->validateTable($exportConfig->getDbName(), $exportConfig->getItems());
+        $this->adapter->validateTable($exportConfig->getDbName(), $exportConfig->getItems());
 
         // upsert from staging to destination table
-        $this->upsert($exportConfig, $stageTableName);
+        $this->adapter->upsert($exportConfig, $stageTableName);
     }
 
     protected function writeFull(ExportConfig $exportConfig): void
     {
-        $this->drop($exportConfig->getDbName());
-        $this->create($exportConfig->getDbName(), false, $exportConfig->getItems());
-        $this->write($exportConfig);
+        $this->adapter->drop($exportConfig->getDbName());
+        $this->adapter->create($exportConfig->getDbName(), false, $exportConfig->getItems());
+        $this->adapter->writeData($exportConfig);
     }
 
-    abstract protected function createConnection(DatabaseConfig $databaseConfig): Connection;
-
-    abstract protected function drop(string $tableName): void;
-
     /**
-     * @param ItemConfig[] $columns
+     * @throws UserException|SshException
+     * @throws PropertyNotSetException
      */
-    abstract protected function create(
-        string $tableName,
-        bool $createTemporaryTable,
-        array $columns,
-    ): void;
+    protected function createSshTunnel(DatabaseConfig $databaseConfig): DatabaseConfig
+    {
+        $sshTunnel = new SshTunnel($this->logger);
+        return $sshTunnel->createSshTunnel($databaseConfig);
+    }
 
-    abstract protected function writeData(string $tableName, SplFileInfo $csv): void;
-
-    abstract protected function upsert(ExportConfig $exportConfig, string $stageTableName): void;
-
-    abstract protected function tableExists(string $tableName): bool;
-
-    abstract protected function generateTmpName(string $tableName): string;
-
-    abstract protected function showTables(string $dbName): array;
-
-    abstract protected static function getAllowedTypes(): array;
-
-    /**
-     * @param ItemConfig[] $columns
-     */
-    abstract protected function validateTable(string $tableName, array $columns): void;
 }

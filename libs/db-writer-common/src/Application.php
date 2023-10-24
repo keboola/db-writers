@@ -8,6 +8,9 @@ use Keboola\Component\BaseComponent;
 use Keboola\DbWriter\Exception\ApplicationException;
 use Keboola\DbWriter\Exception\InvalidDatabaseHostException;
 use Keboola\DbWriter\Exception\UserException;
+use Keboola\DbWriterConfig\Configuration\ActionConfigDefinition;
+use Keboola\DbWriterConfig\Configuration\ConfigDefinition;
+use Keboola\DbWriterConfig\Configuration\ConfigRowDefinition;
 use Keboola\DbWriterConfig\Configuration\ValueObject\DatabaseConfig;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
 use Psr\Log\LoggerInterface;
@@ -27,7 +30,7 @@ class Application extends BaseComponent
     /**
      * @throws UserException|ApplicationException
      */
-    public function run(): void
+    protected function run(): void
     {
         $parameters = $this->getConfig()->getParameters();
         $writerFactory = new WriterFactory($this->getConfig());
@@ -48,7 +51,7 @@ class Application extends BaseComponent
     /**
      * @throws UserException
      */
-    public function testConnectionAction(): string
+    public function testConnectionAction(): array
     {
         $writerFactory = new WriterFactory($this->getConfig());
         $writer = $writerFactory->create($this->getLogger());
@@ -58,15 +61,15 @@ class Application extends BaseComponent
             throw new UserException(sprintf("Connection failed: '%s'", $e->getMessage()), 0, $e);
         }
 
-        return json_encode([
+        return [
             'status' => 'success',
-        ]);
+        ];
     }
 
     /**
      * @throws UserException
      */
-    public function getTablesInfoAction(): string
+    public function getTablesInfoAction(): array
     {
         $writerFactory = new WriterFactory($this->getConfig());
         $writer = $writerFactory->create($this->getLogger());
@@ -78,10 +81,10 @@ class Application extends BaseComponent
             $tablesInfo[$tableName] = $writer->getTableInfo($tableName);
         }
 
-        return json_encode([
+        return [
             'status' => 'success',
             'tables' => $tablesInfo,
-        ]);
+        ];
     }
 
     protected function createExportConfig(array $table): ExportConfig
@@ -95,6 +98,20 @@ class Application extends BaseComponent
             'testConnection' => 'testConnectionAction',
             'getTablesInfo' => 'getTablesInfoAction',
         ];
+    }
+
+    protected function getConfigDefinitionClass(): string
+    {
+        if ($this->isRowConfiguration($this->getRawConfig())) {
+            $action = $this->getRawConfig()['action'] ?? 'run';
+            if ($action === 'run') {
+                return ConfigRowDefinition::class;
+            } else {
+                return ActionConfigDefinition::class;
+            }
+        }
+
+        return ConfigDefinition::class;
     }
 
     protected function getValidator(): Validator

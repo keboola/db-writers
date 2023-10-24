@@ -7,6 +7,7 @@ namespace Keboola\DbWriter;
 use Keboola\Component\Config\BaseConfig;
 use Keboola\DbWriter\Exception\UserException;
 use Keboola\DbWriter\Writer\BaseWriter;
+use Keboola\DbWriterConfig\Configuration\ValueObject\DatabaseConfig;
 use Psr\Log\LoggerInterface;
 
 readonly class WriterFactory
@@ -26,6 +27,6 @@ readonly class WriterFactory
             throw new UserException(sprintf("Writer class '%s' doesn't exist", $writerClass));
         }
 
-        return new $writerClass($parameters['db'], $logger);
+        return new $writerClass(DatabaseConfig::fromArray($parameters['db']), $logger);
     }
 }

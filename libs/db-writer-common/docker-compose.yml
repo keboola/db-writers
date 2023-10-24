@@ -17,6 +17,7 @@ services:
   dev:
     <<: *tests
     volumes:
+      - ./data:/data
       - .:/code
       - ssh-keys:/root/.ssh:ro
 

@@ -14,9 +14,11 @@
     "php": "^8.2",
     "ext-json": "*",
     "ext-pdo": "*",
+    "keboola/db-writer-adapter": "dev-ondra-init-adapter",
     "keboola/db-writer-config": "dev-ondra-init-config",
     "keboola/php-component": "^9.4",
-    "keboola/retry": "^0.5.1"
+    "keboola/retry": "^0.5.1",
+    "keboola/ssh-tunnel": "^2.0"
   },
   "autoload": {
     "psr-4": {
