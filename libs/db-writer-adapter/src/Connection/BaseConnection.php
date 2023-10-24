@@ -13,12 +13,8 @@ use Retry\Policy\SimpleRetryPolicy;
 use Retry\RetryProxy;
 use Throwable;
 
-abstract class BaseConnection
+abstract class BaseConnection implements Connection
 {
-    public const CONNECT_DEFAULT_MAX_RETRIES = 3;
-
-    public const DEFAULT_MAX_RETRIES = 5;
-
     public const BASE_RETRIED_EXCEPTIONS = [
         DeadConnectionException::class, // see BaseDbConnection:isAlive()];
     ];
