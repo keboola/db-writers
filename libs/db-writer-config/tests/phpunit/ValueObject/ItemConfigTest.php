@@ -26,7 +26,7 @@ class ItemConfigTest extends TestCase
         self::assertSame($config['type'], $itemConfig->getType());
 
         self::assertFalse($itemConfig->hasSize());
-        self::assertFalse($itemConfig->hasNullable());
+        self::assertFalse($itemConfig->getNullable());
         self::assertFalse($itemConfig->hasDefault());
 
         try {
@@ -34,13 +34,6 @@ class ItemConfigTest extends TestCase
             self::fail('Exception expected');
         } catch (PropertyNotSetException $e) {
             Assert::assertEquals('Property "size" is not set.', $e->getMessage());
-        }
-
-        try {
-            $itemConfig->getNullable();
-            self::fail('Exception expected');
-        } catch (PropertyNotSetException $e) {
-            Assert::assertEquals('Property "nullable" is not set.', $e->getMessage());
         }
 
         try {
@@ -75,7 +68,7 @@ class ItemConfigTest extends TestCase
         self::assertSame($config['default'], $itemConfig->getDefault());
 
         self::assertTrue($itemConfig->hasSize());
-        self::assertTrue($itemConfig->hasNullable());
+        self::assertTrue($itemConfig->getNullable());
         self::assertTrue($itemConfig->hasDefault());
     }
 }

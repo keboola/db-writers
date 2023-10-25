@@ -102,7 +102,7 @@ class ExportConfigTest extends TestCase
 
         $itemConfig = $exportConfig->getItems()[0];
         Assert::assertFalse($itemConfig->hasSize());
-        Assert::assertFalse($itemConfig->hasNullable());
+        Assert::assertFalse($itemConfig->getNullable());
         Assert::assertFalse($itemConfig->hasDefault());
     }
 }

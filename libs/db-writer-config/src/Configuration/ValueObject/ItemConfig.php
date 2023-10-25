@@ -45,14 +45,9 @@ readonly class ItemConfig
         return $this->size !== null;
     }
 
-    public function hasNullable(): bool
-    {
-        return $this->nullable !== null;
-    }
-
     public function hasDefault(): bool
     {
-        return $this->default !== null;
+        return !empty($this->default);
     }
 
     public function getName(): string
@@ -81,13 +76,10 @@ readonly class ItemConfig
         return $this->size;
     }
 
-    /**
-     * @throws PropertyNotSetException
-     */
     public function getNullable(): bool
     {
-        if ($this->nullable === null) {
-            throw new PropertyNotSetException('Property "nullable" is not set.');
+        if (is_null($this->nullable)) {
+            return false;
         }
         return $this->nullable;
     }
