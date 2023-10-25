@@ -165,6 +165,7 @@ class Application extends BaseComponent
     private function validateTableItems(array $table): array
     {
         $validator = $this->getValidator();
-        return $validator->validateTableItems($this->getInputTablePath($table['tableId']), $table['items']);
+        $table['items'] = $validator->validateTableItems($this->getInputTablePath($table['tableId']), $table['items']);
+        return $table;
     }
 }

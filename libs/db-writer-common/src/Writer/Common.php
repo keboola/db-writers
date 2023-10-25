@@ -8,6 +8,7 @@ use Keboola\Component\UserException;
 use Keboola\DbWriterAdapter\Connection\Connection;
 use Keboola\DbWriterAdapter\PDO\PdoConnection;
 use Keboola\DbWriterAdapter\PDO\PdoWriteAdapter;
+use Keboola\DbWriterAdapter\Query\DefaultQueryBuilder;
 use Keboola\DbWriterAdapter\WriteAdapter;
 use Keboola\DbWriterConfig\Configuration\ValueObject\DatabaseConfig;
 use Keboola\DbWriterConfig\Exception\PropertyNotSetException;
@@ -53,7 +54,10 @@ class Common extends BaseWriter
 
     protected function createWriteAdapter(): WriteAdapter
     {
-        return new PdoWriteAdapter();
+        return new PdoWriteAdapter(
+            $this->connection,
+            new DefaultQueryBuilder(),
+        );
     }
 
     protected static function getAllowedTypes(): array
