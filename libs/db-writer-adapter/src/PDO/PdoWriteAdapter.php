@@ -5,15 +5,27 @@ declare(strict_types=1);
 namespace Keboola\DbWriterAdapter\PDO;
 
 use Keboola\DbWriterAdapter\BaseWriteAdapter;
+use Keboola\DbWriterAdapter\Connection\Connection;
+use Keboola\DbWriterAdapter\Query\QueryBuilder;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ItemConfig;
-use Symfony\Component\Finder\SplFileInfo;
+use SplFileInfo;
 
 class PdoWriteAdapter extends BaseWriteAdapter
 {
+    public function __construct(
+        readonly protected Connection $connection,
+        readonly protected QueryBuilder $queryBuilder,
+    ) {
+        parent::__construct();
+    }
+
     public function drop(string $tableName): void
     {
-        // TODO: Implement drop() method.
+        $this->connection->query(
+            $this->queryBuilder->dropQueryStatement($this->connection, $tableName),
+            Connection::DEFAULT_MAX_RETRIES,
+        );
     }
 
     /**
@@ -21,7 +33,10 @@ class PdoWriteAdapter extends BaseWriteAdapter
      */
     public function create(string $tableName, bool $isTempTable, array $items): void
     {
-        // TODO: Implement create() method.
+        $this->connection->query(
+            $this->queryBuilder->createQueryStatement($this->connection, $tableName, $isTempTable, $items),
+            Connection::DEFAULT_MAX_RETRIES,
+        );
     }
 
     public function writeData(string $tableName, SplFileInfo $csv): void
@@ -41,7 +56,8 @@ class PdoWriteAdapter extends BaseWriteAdapter
 
     public function generateTmpName(string $tableName): string
     {
-        return '';
+        $tmpId = '_temp_' . uniqid();
+        return mb_substr($tableName, 0, 64 - mb_strlen($tmpId)) . $tmpId;
     }
 
     /**

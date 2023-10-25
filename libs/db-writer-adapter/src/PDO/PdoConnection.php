@@ -87,9 +87,7 @@ class PdoConnection extends BaseConnection
 
     protected function doQuery(string $query): void
     {
-        /** @var PDOStatement $stmt */
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
+        $this->pdo->exec($query);
     }
 
 

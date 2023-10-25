@@ -6,7 +6,7 @@ namespace Keboola\DbWriterAdapter;
 
 use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ItemConfig;
-use Symfony\Component\Finder\SplFileInfo;
+use SplFileInfo;
 
 interface WriteAdapter
 {
