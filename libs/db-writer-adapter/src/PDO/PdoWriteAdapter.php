@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace Keboola\DbWriterAdapter\PDO;
 
+use Keboola\Component\UserException;
 use Keboola\DbWriterAdapter\BaseWriteAdapter;
 use Keboola\DbWriterAdapter\Connection\Connection;
 use Keboola\DbWriterAdapter\Query\QueryBuilder;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ItemConfig;
+use PDOException;
 use SplFileInfo;
 
 class PdoWriteAdapter extends BaseWriteAdapter
 {
     public function __construct(
-        readonly protected Connection $connection,
+        readonly protected PdoConnection $connection,
         readonly protected QueryBuilder $queryBuilder,
     ) {
         parent::__construct();
@@ -24,7 +26,6 @@ class PdoWriteAdapter extends BaseWriteAdapter
     {
         $this->connection->query(
             $this->queryBuilder->dropQueryStatement($this->connection, $tableName),
-            Connection::DEFAULT_MAX_RETRIES,
         );
     }
 
@@ -39,9 +40,14 @@ class PdoWriteAdapter extends BaseWriteAdapter
         );
     }
 
-    public function writeData(string $tableName, SplFileInfo $csv): void
+    public function writeData(string $tableName, string $csvPath): void
     {
-        // TODO: Implement writeData() method.
+        $query = $this->queryBuilder->writeDataQueryStatement($this->connection, $tableName, $csvPath);
+        try {
+            $this->connection->query($query);
+        } catch (PDOException $e) {
+            throw new UserException('Query failed: ' . $e->getMessage(), 400, $e);
+        }
     }
 
     public function upsert(ExportConfig $exportConfig, string $stageTableName): void
@@ -51,7 +57,14 @@ class PdoWriteAdapter extends BaseWriteAdapter
 
     public function tableExists(string $tableName): bool
     {
-        return false;
+        $stmt = $this->connection->getConnection()->query(
+            $this->queryBuilder->tableExistsQueryStatement($this->connection, $tableName),
+        );
+        if (!$stmt) {
+            return false;
+        }
+        $res = $stmt->fetchAll();
+        return !empty($res);
     }
 
     public function generateTmpName(string $tableName): string

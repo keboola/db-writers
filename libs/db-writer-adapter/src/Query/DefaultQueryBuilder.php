@@ -69,9 +69,34 @@ class DefaultQueryBuilder implements QueryBuilder
         );
     }
 
-    public function writeDataQueryStatement(string $tableName, SplFileInfo $csv): string
+    public function writeDataQueryStatement(
+        Connection $connection,
+        string $tableName,
+        string $csvPath,
+    ): string {
+        $query = "
+            LOAD DATA LOCAL INFILE '%s'
+            INTO TABLE %s
+            CHARACTER SET utf8
+            FIELDS TERMINATED BY ','
+            OPTIONALLY ENCLOSED BY '\"'
+            ESCAPED BY ''
+            IGNORE 1 LINES
+        ";
+
+        return sprintf(
+            $query,
+            $csvPath,
+            $connection->quoteIdentifier($tableName),
+        );
+    }
+
+    public function tableExistsQueryStatement(Connection $connection, string $tableName): string
     {
-        return '';
+        return sprintf(
+            'SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = %s',
+            $connection->quote($tableName),
+        );
     }
 
     public function upsertQueryStatement(ExportConfig $exportConfig, string $stageTableName): string

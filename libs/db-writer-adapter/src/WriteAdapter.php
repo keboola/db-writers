@@ -17,7 +17,7 @@ interface WriteAdapter
      */
     public function create(string $tableName, bool $isTempTable, array $items): void;
 
-    public function writeData(string $tableName, SplFileInfo $csv): void;
+    public function writeData(string $tableName, string $csvPath): void;
 
     public function upsert(ExportConfig $exportConfig, string $stageTableName): void;
 
