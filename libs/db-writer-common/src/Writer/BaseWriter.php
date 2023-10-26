@@ -58,7 +58,7 @@ abstract class BaseWriter
 
         $this->adapter->drop($stageTableName);
         $this->adapter->create($stageTableName, true, $exportConfig->getItems());
-        $this->adapter->writeData($stageTableName, $exportConfig->getCsv());
+        $this->adapter->writeData($stageTableName, $exportConfig->getTableFilePath());
 
         // create destination table if not exists
         if (!$this->adapter->tableExists($exportConfig->getDbName())) {
@@ -74,7 +74,8 @@ abstract class BaseWriter
     {
         $this->adapter->drop($exportConfig->getDbName());
         $this->adapter->create($exportConfig->getDbName(), false, $exportConfig->getItems());
-        $this->adapter->writeData($exportConfig);
+        $this->adapter->writeData($exportConfig->getDbName(), $exportConfig->getTableFilePath());
+        var_dump($this->adapter->tableExists($exportConfig->getDbName()));
     }
 
     /**

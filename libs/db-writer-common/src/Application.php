@@ -89,7 +89,7 @@ class Application extends BaseComponent
 
     protected function createExportConfig(array $table): ExportConfig
     {
-        return ExportConfig::fromArray($table);
+        return ExportConfig::fromArray($table, $this->getConfig()->getInputTables());
     }
 
     protected function getSyncActions(): array
