@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\DbWriterConfig\Configuration\ValueObject;
 
 use Keboola\DbWriterConfig\Exception\PropertyNotSetException;
+use Keboola\DbWriterConfig\Exception\UserException;
 
 readonly class ExportConfig
 {
@@ -21,10 +22,26 @@ readonly class ExportConfig
      *     primary_key?: string[],
      *     items: array
      * }
-     *
+     * @param $inputMapping array{
+     *     source: string,
+     *     destination: string,
+     *     columns: array<string>
+     * }
      */
-    public static function fromArray(array $config): self
+    public static function fromArray(array $config, array $inputMapping): self
     {
+        $filteredInputMapping = array_filter($inputMapping, fn($v) => $v['source'] === $config['tableId']);
+        if (count($filteredInputMapping) === 0) {
+            throw new UserException(
+                sprintf('Table "%s" in storage input mapping cannot be found.', $config['tableId']),
+            );
+        }
+        $tableFilePath = sprintf(
+            '%s/in/tables/%s',
+            $config['data_dir'],
+            current($filteredInputMapping)['destination'],
+        );
+
         return new self(
             $config['data_dir'],
             $config['writer_class'],
@@ -35,6 +52,7 @@ readonly class ExportConfig
             $config['export'] ?? true,
             $config['primary_key'] ?? null,
             array_map(fn($v) => ItemConfig::fromArray($v), $config['items']),
+            $tableFilePath,
         );
     }
 
@@ -52,6 +70,7 @@ readonly class ExportConfig
         private bool $export,
         private ?array $primaryKey,
         private array $items,
+        private string $tableFilePath,
     ) {
     }
 
@@ -113,5 +132,10 @@ readonly class ExportConfig
     public function getItems(): array
     {
         return $this->items;
+    }
+
+    public function getTableFilePath(): string
+    {
+        return $this->tableFilePath;
     }
 }

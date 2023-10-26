@@ -43,7 +43,15 @@ class ExportConfigTest extends TestCase
             ],
         ];
 
-        $exportConfig = ExportConfig::fromArray($config);
+        $inputMapping = [
+            [
+                'source' => 'tableId',
+                'destination' => 'destination',
+                'columns' => [],
+            ],
+        ];
+
+        $exportConfig = ExportConfig::fromArray($config, $inputMapping);
 
         Assert::assertSame($config['data_dir'], $exportConfig->getDataDir());
         Assert::assertSame($config['writer_class'], $exportConfig->getWriterClass());
@@ -90,7 +98,15 @@ class ExportConfigTest extends TestCase
             ],
         ];
 
-        $exportConfig = ExportConfig::fromArray($config);
+        $inputMapping = [
+            [
+                'source' => 'tableId',
+                'destination' => 'destination',
+                'columns' => [],
+            ],
+        ];
+
+        $exportConfig = ExportConfig::fromArray($config, $inputMapping);
         Assert::assertFalse($exportConfig->hasPrimaryKey());
 
         $databaseConfig = $exportConfig->getDatabaseConfig();
