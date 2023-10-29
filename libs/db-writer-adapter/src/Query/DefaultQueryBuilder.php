@@ -99,8 +99,81 @@ class DefaultQueryBuilder implements QueryBuilder
         );
     }
 
-    public function upsertQueryStatement(ExportConfig $exportConfig, string $stageTableName): string
+    public function upsertUpdateRowsQueryStatement(
+        Connection $connection,
+        ExportConfig $exportConfig,
+        string $stageTableName,
+    ): string {
+        $columns = array_map(function ($item) {
+            return $item->getDbName();
+        }, $exportConfig->getItems());
+
+        // update data
+        $joinClauseArr = array_map(fn($item) => sprintf(
+            'a.%s = b.%s',
+            $connection->quoteIdentifier($item),
+            $connection->quoteIdentifier($item),
+        ), $exportConfig->getPrimaryKey());
+        $joinClause = implode(' AND ', $joinClauseArr);
+
+        $valuesClauseArr = array_map(fn($item) => sprintf(
+            'a.%s = b.%s',
+            $connection->quoteIdentifier($item),
+            $connection->quoteIdentifier($item),
+        ), $columns);
+        $valuesClause = implode(',', $valuesClauseArr);
+
+        return sprintf(
+            'UPDATE %s a INNER JOIN %s b ON %s SET %s',
+            $connection->quoteIdentifier($exportConfig->getDbName()),
+            $connection->quoteIdentifier($stageTableName),
+            $joinClause,
+            $valuesClause,
+        );
+    }
+
+    public function upsertDeleteRowsQueryStatement(
+        Connection $connection,
+        ExportConfig $exportConfig,
+        string $stageTableName,
+    ): string {
+        $joinClauseArr = array_map(fn($item) => sprintf(
+            'a.%s = b.%s',
+            $connection->quoteIdentifier($item),
+            $connection->quoteIdentifier($item),
+        ), $exportConfig->getPrimaryKey());
+        $joinClause = implode(' AND ', $joinClauseArr);
+
+        return sprintf(
+            'DELETE a.* FROM %s a INNER JOIN %s b ON %s',
+            $connection->quoteIdentifier($stageTableName),
+            $connection->quoteIdentifier($exportConfig->getDbName()),
+            $joinClause,
+        );
+    }
+
+    public function upsertQueryStatement(
+        Connection $connection,
+        ExportConfig $exportConfig,
+        string $stageTableName,
+    ): string {
+        $columns = array_map(function ($item) use ($connection) {
+            return $connection->quoteIdentifier($item->getDbName());
+        }, $exportConfig->getItems());
+
+        return sprintf(
+            'INSERT INTO %s (%s) SELECT * FROM `%s`',
+            $connection->quoteIdentifier($exportConfig->getDbName()),
+            implode(', ', $columns),
+            $connection->quoteIdentifier($stageTableName),
+        );
+    }
+
+    public function tableInfoQueryStatement(Connection $connection, string $dbName): string
     {
-        return '';
+        return sprintf(
+            'DESCRIBE %s',
+            $connection->quoteIdentifier($dbName),
+        );
     }
 }

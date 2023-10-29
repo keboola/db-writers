@@ -22,13 +22,27 @@ interface QueryBuilder
         array $items,
     ): string;
 
-    public function writeDataQueryStatement(
-        Connection $connection,
-        string $tableName,
-        string $csvPath,
-    ): string;
+    public function writeDataQueryStatement(Connection $connection, string $tableName, string $csv): string;
 
     public function tableExistsQueryStatement(Connection $connection, string $tableName): string;
 
-    public function upsertQueryStatement(ExportConfig $exportConfig, string $stageTableName): string;
+    public function tableInfoQueryStatement(Connection $connection, string $dbName): string;
+
+    public function upsertUpdateRowsQueryStatement(
+        Connection $connection,
+        ExportConfig $exportConfig,
+        string $stageTableName,
+    ): string;
+
+    public function upsertDeleteRowsQueryStatement(
+        Connection $connection,
+        ExportConfig $exportConfig,
+        string $stageTableName,
+    ): string;
+
+    public function upsertQueryStatement(
+        Connection $connection,
+        ExportConfig $exportConfig,
+        string $stageTableName,
+    ): string;
 }
