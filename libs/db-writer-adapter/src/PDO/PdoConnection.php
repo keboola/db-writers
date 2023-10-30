@@ -67,7 +67,7 @@ class PdoConnection extends BaseConnection
 
     public function testConnection(): void
     {
-        $this->query('SELECT 1', 1);
+        $this->exec('SELECT 1', 1);
     }
 
     public function getConnection(): PDO
@@ -85,11 +85,26 @@ class PdoConnection extends BaseConnection
         return '`' . str_replace('`', '``', $str) . '`';
     }
 
-    protected function doQuery(string $query): void
+    /**
+     * @return null|array<int, array<string, mixed>>
+     * @throws UserException
+     */
+    protected function doQuery(string $queryType, string $query): ?array
     {
-        $this->pdo->exec($query);
+        switch ($queryType) {
+            case self::QUERY_TYPE_EXEC:
+                $this->pdo->exec($query);
+                return null;
+            case self::QUERY_TYPE_FETCH_ALL:
+                $stmt = $this->pdo->prepare($query);
+                if (!$stmt instanceof PDOStatement) {
+                    return [];
+                }
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            default:
+                throw new UserException(sprintf('Unknown query type "%s".', $queryType));
+        }
     }
-
 
     /**
      * @return string[]

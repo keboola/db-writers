@@ -40,7 +40,10 @@ abstract class BaseConnection implements Connection
 
     abstract protected function connect(): void;
 
-    abstract protected function doQuery(string $query): void;
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    abstract protected function doQuery(string $queryType, string $query): ?array;
 
     /**
      * @return string[]
@@ -71,35 +74,37 @@ abstract class BaseConnection implements Connection
         }
     }
 
-    public function query(string $query, int $maxRetries = self::DEFAULT_MAX_RETRIES): void
+    public function exec(string $query, int $maxRetries = self::DEFAULT_MAX_RETRIES): void
     {
         $this->callWithRetry(
             $maxRetries,
             function () use ($query): void {
-                $this->queryReconnectOnError($query);
+                $this->queryReconnectOnError(Connection::QUERY_TYPE_EXEC, $query);
             },
         );
     }
 
     /**
-     * @throws UserRetriedException|Throwable
+     * @return array<int, array<string, mixed>>
      */
-    public function queryAndProcess(string $query, int $maxRetries): void
+    public function fetchAll(string $query, int $maxRetries): array
     {
-        $this->callWithRetry(
+        return $this->callWithRetry(
             $maxRetries,
-            function () use ($query): void {
-                $this->queryReconnectOnError($query);
-                $this->isAlive();
+            function () use ($query): array {
+                return $this->queryReconnectOnError(Connection::QUERY_TYPE_FETCH_ALL, $query) ?? [];
             },
-        );
+        ) ?? [];
     }
 
-    protected function queryReconnectOnError(string $query): void
+    /**
+     * @return null|array<int, array<string, mixed>>
+     */
+    protected function queryReconnectOnError(string $queryType, string $query): ?array
     {
         $this->logger->debug(sprintf('Running query "%s".', $query));
         try {
-            $this->doQuery($query);
+            return $this->doQuery($queryType, $query);
         } catch (Throwable $e) {
             try {
                 // Reconnect
@@ -123,11 +128,17 @@ abstract class BaseConnection implements Connection
         }
     }
 
-    protected function callWithRetry(int $maxRetries, callable $callback): void
+    /**
+     * @return null|array<int, array<string, mixed>>
+     * @throws Throwable|UserRetriedException
+     */
+    protected function callWithRetry(int $maxRetries, callable $callback): ?array
     {
         $proxy = $this->createRetryProxy($maxRetries);
         try {
-            $proxy->call($callback);
+            /** @var null|array<int, array<string, mixed>> $res */
+            $res = $proxy->call($callback);
+            return $res;
         } catch (Throwable $e) {
             throw in_array(get_class($e), $this->getExpectedExceptionClasses(), true) ?
                 new UserRetriedException($proxy->getTryCount(), $e->getMessage(), 0, $e) :
@@ -146,7 +157,7 @@ abstract class BaseConnection implements Connection
     {
         foreach ($this->userInitQueries as $userInitQuery) {
             $this->logger->info(sprintf('Running query "%s".', $userInitQuery));
-            $this->doQuery($userInitQuery);
+            $this->doQuery(Connection::QUERY_TYPE_EXEC, $userInitQuery);
         }
     }
 }

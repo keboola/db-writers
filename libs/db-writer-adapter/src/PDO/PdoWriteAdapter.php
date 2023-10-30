@@ -24,7 +24,7 @@ class PdoWriteAdapter extends BaseWriteAdapter
 
     public function drop(string $tableName): void
     {
-        $this->connection->query(
+        $this->connection->exec(
             $this->queryBuilder->dropQueryStatement($this->connection, $tableName),
         );
     }
@@ -34,7 +34,7 @@ class PdoWriteAdapter extends BaseWriteAdapter
      */
     public function create(string $tableName, bool $isTempTable, array $items): void
     {
-        $this->connection->query(
+        $this->connection->exec(
             $this->queryBuilder->createQueryStatement($this->connection, $tableName, $isTempTable, $items),
             Connection::DEFAULT_MAX_RETRIES,
         );
@@ -44,7 +44,7 @@ class PdoWriteAdapter extends BaseWriteAdapter
     {
         $query = $this->queryBuilder->writeDataQueryStatement($this->connection, $tableName, $csvPath);
         try {
-            $this->connection->query($query);
+            $this->connection->exec($query);
         } catch (PDOException $e) {
             throw new UserException('Query failed: ' . $e->getMessage(), 400, $e);
         }
@@ -61,17 +61,17 @@ class PdoWriteAdapter extends BaseWriteAdapter
         }, $exportConfig->getItems());
 
         if ($exportConfig->hasPrimaryKey()) {
-            $this->connection->query(
+            $this->connection->exec(
                 $this->queryBuilder->upsertUpdateRowsQueryStatement($this->connection, $exportConfig, $stageTableName),
             );
 
             // delete updated from temp table
-            $this->connection->query(
+            $this->connection->exec(
                 $this->queryBuilder->upsertDeleteRowsQueryStatement($this->connection, $exportConfig, $stageTableName),
             );
         }
 
-        $this->connection->query(
+        $this->connection->exec(
             $this->queryBuilder->upsertQueryStatement($this->connection, $exportConfig, $stageTableName),
         );
     }
