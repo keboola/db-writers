@@ -56,10 +56,6 @@ class PdoWriteAdapter extends BaseWriteAdapter
             $this->create($exportConfig->getDbName(), false, $exportConfig->getItems());
         }
 
-        $columns = array_map(function ($item) {
-            return $item->getDbName();
-        }, $exportConfig->getItems());
-
         if ($exportConfig->hasPrimaryKey()) {
             $this->connection->exec(
                 $this->queryBuilder->upsertUpdateRowsQueryStatement($this->connection, $exportConfig, $stageTableName),
@@ -78,13 +74,10 @@ class PdoWriteAdapter extends BaseWriteAdapter
 
     public function tableExists(string $tableName): bool
     {
-        $stmt = $this->connection->getConnection()->query(
+        $res = $this->connection->fetchAll(
             $this->queryBuilder->tableExistsQueryStatement($this->connection, $tableName),
+            Connection::DEFAULT_MAX_RETRIES,
         );
-        if (!$stmt) {
-            return false;
-        }
-        $res = $stmt->fetchAll();
         return !empty($res);
     }
 
@@ -99,13 +92,12 @@ class PdoWriteAdapter extends BaseWriteAdapter
      */
     public function showTables(): array
     {
-        $stmt = $this->connection->getConnection()->query(
+        /** @var string[] $res */
+        $res = $this->connection->fetchAll(
             $this->queryBuilder->listTablesQueryStatement($this->connection),
+            Connection::DEFAULT_MAX_RETRIES,
         );
-        if (!$stmt) {
-            return [];
-        }
-        $res = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
         return $res;
     }
 
@@ -155,12 +147,12 @@ class PdoWriteAdapter extends BaseWriteAdapter
      */
     public function getTableInfo(string $tableName): array
     {
-        $stmt = $this->connection->getConnection()->query(
+        /** @var array{Field: string, Type: string}[] $res */
+        $res = $this->connection->fetchAll(
             $this->queryBuilder->tableInfoQueryStatement($this->connection, $tableName),
+            Connection::DEFAULT_MAX_RETRIES,
         );
-        if (!$stmt) {
-            return [];
-        }
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $res;
     }
 }
