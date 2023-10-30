@@ -92,13 +92,13 @@ class PdoWriteAdapter extends BaseWriteAdapter
      */
     public function showTables(): array
     {
-        /** @var string[] $res */
+        /** @var array<int, array<string, string>> $res */
         $res = $this->connection->fetchAll(
             $this->queryBuilder->listTablesQueryStatement($this->connection),
             Connection::DEFAULT_MAX_RETRIES,
         );
 
-        return $res;
+        return array_map(fn(array $item) => (string) array_shift($item), $res);
     }
 
     /**

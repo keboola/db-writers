@@ -96,7 +96,7 @@ class PdoConnection extends BaseConnection
                 $this->pdo->exec($query);
                 return null;
             case self::QUERY_TYPE_FETCH_ALL:
-                $stmt = $this->pdo->prepare($query);
+                $stmt = $this->pdo->query($query);
                 if (!$stmt instanceof PDOStatement) {
                     return [];
                 }
