@@ -26,6 +26,8 @@ interface QueryBuilder
 
     public function tableExistsQueryStatement(Connection $connection, string $tableName): string;
 
+    public function listTablesQueryStatement(Connection $connection): string;
+
     public function tableInfoQueryStatement(Connection $connection, string $dbName): string;
 
     public function upsertUpdateRowsQueryStatement(

@@ -28,7 +28,12 @@ interface WriteAdapter
     /**
      * @return string[]
      */
-    public function showTables(string $dbName): array;
+    public function showTables(): array;
+
+    /**
+     * @return array{Field: string, Type: string}[]
+     */
+    public function getTableInfo(string $tableName): array;
 
     /**
      * @param ItemConfig[] $items

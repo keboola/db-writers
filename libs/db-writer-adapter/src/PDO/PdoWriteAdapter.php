@@ -97,9 +97,16 @@ class PdoWriteAdapter extends BaseWriteAdapter
     /**
      * @return string[]
      */
-    public function showTables(string $dbName): array
+    public function showTables(): array
     {
-        return [];
+        $stmt = $this->connection->getConnection()->query(
+            $this->queryBuilder->listTablesQueryStatement($this->connection),
+        );
+        if (!$stmt) {
+            return [];
+        }
+        $res = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return $res;
     }
 
     /**
@@ -146,7 +153,7 @@ class PdoWriteAdapter extends BaseWriteAdapter
     /**
      * @return array{Field: string, Type: string}[]
      */
-    private function getTableInfo(string $tableName): array
+    public function getTableInfo(string $tableName): array
     {
         $stmt = $this->connection->getConnection()->query(
             $this->queryBuilder->tableInfoQueryStatement($this->connection, $tableName),

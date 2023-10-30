@@ -169,6 +169,11 @@ class DefaultQueryBuilder implements QueryBuilder
         );
     }
 
+    public function listTablesQueryStatement(Connection $connection): string
+    {
+        return 'SHOW TABLES';
+    }
+
     public function tableInfoQueryStatement(Connection $connection, string $dbName): string
     {
         return sprintf(

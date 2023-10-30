@@ -20,7 +20,7 @@ class PdoConnection extends BaseConnection
 
     protected string $password;
 
-    /** @var array<int, int|string> */
+    /** @var array<int, int|string|bool> */
     protected array $options;
 
     /** @var callable|null */
@@ -29,7 +29,7 @@ class PdoConnection extends BaseConnection
     protected PDO $pdo;
 
     /**
-     * @param array<int, int|string> $options
+     * @param array<int, int|string|bool> $options
      * @param string[] $userInitQueries
      * @throws UserException
      */
