@@ -16,12 +16,8 @@ use PDO;
 
 class Common extends BaseWriter
 {
-    protected const ALLOWED_TYPES = [
-        'int', 'smallint', 'bigint',
-        'decimal', 'float', 'double',
-        'date', 'datetime', 'timestamp',
-        'char', 'varchar', 'text', 'blob',
-    ];
+    /** @var PdoConnection $connection */
+    protected Connection $connection;
 
     /**
      * @throws UserException|PropertyNotSetException
@@ -33,7 +29,7 @@ class Common extends BaseWriter
             'mysql:host=%s;port=%s;dbname=%s;charset=utf8',
             $databaseConfig->getHost(),
             $port,
-            $databaseConfig->getDatabase()
+            $databaseConfig->getDatabase(),
         );
 
         return new PdoConnection(
@@ -45,7 +41,7 @@ class Common extends BaseWriter
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::MYSQL_ATTR_LOCAL_INFILE => true,
             ],
-            function (PDO $connection) use ($databaseConfig): void {
+            function (PDO $connection): void {
                 $connection->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
                 $connection->exec('SET NAMES utf8;');
             },
@@ -58,15 +54,5 @@ class Common extends BaseWriter
             $this->connection,
             new DefaultQueryBuilder(),
         );
-    }
-
-    protected static function getAllowedTypes(): array
-    {
-        return self::ALLOWED_TYPES;
-    }
-
-    public function getTableInfo(string $tableName): array
-    {
-        // TODO: Implement getTableInfo() method.
     }
 }

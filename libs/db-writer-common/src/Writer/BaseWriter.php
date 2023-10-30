@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Keboola\DbWriter\Writer;
 
 use Keboola\DbWriter\Exception\SshException;
@@ -22,20 +24,16 @@ abstract class BaseWriter
      */
     public function __construct(
         DatabaseConfig $databaseConfig,
-        readonly protected LoggerInterface $logger
+        readonly protected LoggerInterface $logger,
     ) {
         $databaseConfig = $this->createSshTunnel($databaseConfig);
         $this->connection = $this->createConnection($databaseConfig);
         $this->adapter = $this->createWriteAdapter();
     }
 
-    abstract protected function createWriteAdapter(): WriteAdapter;
-
-    abstract public function getTableInfo(string $tableName): array;
-
     abstract protected function createConnection(DatabaseConfig $databaseConfig): Connection;
 
-    abstract protected static function getAllowedTypes(): array;
+    abstract protected function createWriteAdapter(): WriteAdapter;
 
     public function write(ExportConfig $exportConfig): void
     {
@@ -49,6 +47,16 @@ abstract class BaseWriter
     public function testConnection(): void
     {
         $this->connection->testConnection();
+    }
+
+    public function showTables(): array
+    {
+        return $this->adapter->showTables();
+    }
+
+    public function getTableInfo(string $tableName): array
+    {
+        return $this->adapter->getTableInfo($tableName);
     }
 
     protected function writeIncremental(ExportConfig $exportConfig): void
@@ -75,7 +83,6 @@ abstract class BaseWriter
         $this->adapter->drop($exportConfig->getDbName());
         $this->adapter->create($exportConfig->getDbName(), false, $exportConfig->getItems());
         $this->adapter->writeData($exportConfig->getDbName(), $exportConfig->getTableFilePath());
-        var_dump($this->adapter->tableExists($exportConfig->getDbName()));
     }
 
     /**
@@ -87,5 +94,4 @@ abstract class BaseWriter
         $sshTunnel = new SshTunnel($this->logger);
         return $sshTunnel->createSshTunnel($databaseConfig);
     }
-
 }

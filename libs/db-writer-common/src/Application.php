@@ -74,7 +74,7 @@ class Application extends BaseComponent
         $writerFactory = new WriterFactory($this->getConfig());
         $writer = $writerFactory->create($this->getLogger());
 
-        $tables = $writer->showTables(DatabaseConfig::fromArray($this->getConfig()->getParameters()['db']));
+        $tables = $writer->showTables();
 
         $tablesInfo = [];
         foreach ($tables as $tableName) {
@@ -131,9 +131,10 @@ class Application extends BaseComponent
         });
 
         if (count($filteredStorageInputMapping) === 0) {
-            throw new UserException(
-                sprintf('Table "%s" in storage input mapping cannot be found.', $tableId)
-            );
+            throw new UserException(sprintf(
+                'Table "%s" in storage input mapping cannot be found.',
+                $tableId,
+            ));
         }
 
         $tableFromInputMapping = current($filteredStorageInputMapping);
@@ -141,7 +142,7 @@ class Application extends BaseComponent
         return sprintf(
             '%s/in/tables/%s',
             $this->getDataDir(),
-            $tableFromInputMapping['destination']
+            $tableFromInputMapping['destination'],
         );
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Keboola\DbWriter;
 
 use Keboola\CommonExceptions\UserExceptionInterface;
@@ -34,8 +36,8 @@ readonly class Validator
                 sprintf(
                     'Hostname "%s" with port "%s" is not approved.',
                     $db['host'],
-                    $db['port']
-                )
+                    $db['port'],
+                ),
             );
         }
     }
@@ -48,10 +50,14 @@ readonly class Validator
         }
 
         $manifest = @json_decode((string) file_get_contents($manifestPath), true);
-        if (!$manifestPath) {
+        if (!is_array($manifest)) {
             throw new ApplicationException(sprintf('Manifest "%s" is not valid JSON.', $manifestPath));
         }
+        if (!isset($manifest['columns'])) {
+            throw new ApplicationException(sprintf('Manifest "%s" is missing "columns" key.', $manifestPath));
+        }
 
+        /** @var iterable $csvHeader */
         $csvHeader = $manifest['columns'];
         $reordered = [];
         foreach ($csvHeader as $csvCol) {

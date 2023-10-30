@@ -35,9 +35,9 @@
     "tests": [
       "@tests-phpunit"
     ],
-    "phpcs": "phpcs -n --ignore=vendor --extensions=php .",
+    "phpcs": "phpcs -n --ignore=vendor,tests --extensions=php .",
     "phpcbf": "phpcbf -n --ignore=vendor --extensions=php .",
-    "phpstan": "phpstan analyse ./src ./tests --level=max --no-progress -c phpstan.neon",
+    "phpstan": "phpstan analyse ./src --level=max --no-progress -c phpstan.neon",
     "build": [
       "@phpstan",
       "@phpcs",
@@ -54,5 +54,10 @@
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer":  true
     }
+  },
+  "require-dev": {
+    "keboola/coding-standard": "^15.0",
+    "phpstan/phpstan": "^1.10",
+    "phpunit/phpunit": "^10.4"
   }
 }

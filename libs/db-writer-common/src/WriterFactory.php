@@ -27,6 +27,9 @@ readonly class WriterFactory
             throw new UserException(sprintf("Writer class '%s' doesn't exist", $writerClass));
         }
 
-        return new $writerClass(DatabaseConfig::fromArray($parameters['db']), $logger);
+        /** @var BaseWriter $writer */
+        $writer = new $writerClass(DatabaseConfig::fromArray($parameters['db']), $logger);
+
+        return $writer;
     }
 }
