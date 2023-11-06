@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Keboola\DbExtractor\Adapter\Exception;
+namespace Keboola\DbWriterAdapter\Exception;
 
 use Keboola\Component\UserException;
 use Throwable;

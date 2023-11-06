@@ -6,7 +6,6 @@ namespace Keboola\DbWriterAdapter;
 
 use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ItemConfig;
-use SplFileInfo;
 
 interface WriteAdapter
 {
@@ -15,7 +14,12 @@ interface WriteAdapter
     /**
      * @param ItemConfig[] $items
      */
-    public function create(string $tableName, bool $isTempTable, array $items): void;
+    public function create(
+        string $tableName,
+        bool $isTempTable,
+        array $items,
+        ?array $primaryKeys = null,
+    ): void;
 
     public function writeData(string $tableName, string $csvPath): void;
 

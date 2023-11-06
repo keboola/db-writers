@@ -45,6 +45,7 @@ class PdoConnection extends BaseConnection
     ) {
         // Convert errors to PDOExceptions
         $options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+        $options[PDO::MYSQL_ATTR_LOCAL_INFILE] = true;
 
         $this->dsn = $dsn;
         $this->user = $user;
@@ -93,7 +94,7 @@ class PdoConnection extends BaseConnection
     {
         switch ($queryType) {
             case self::QUERY_TYPE_EXEC:
-                $this->pdo->exec($query);
+                $this->pdo->prepare($query)->execute();
                 return null;
             case self::QUERY_TYPE_FETCH_ALL:
                 $stmt = $this->pdo->query($query);

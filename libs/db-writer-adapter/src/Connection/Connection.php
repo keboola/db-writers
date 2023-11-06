@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Keboola\DbWriterAdapter\Connection;
 
-use Keboola\DbExtractor\Adapter\Exception\UserRetriedException;
-
 interface Connection
 {
     public const CONNECT_DEFAULT_MAX_RETRIES = 3;
@@ -35,5 +33,5 @@ interface Connection
      */
     public function fetchAll(string $query, int $maxRetries): array;
 
-    public function exec(string $query, int $maxRetries): void;
+    public function exec(string $query, int $maxRetries = self::DEFAULT_MAX_RETRIES): void;
 }

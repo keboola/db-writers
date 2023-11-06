@@ -20,9 +20,10 @@ interface QueryBuilder
         string $tableName,
         bool $isTempTable,
         array $items,
+        ?array $primaryKeys = null,
     ): string;
 
-    public function writeDataQueryStatement(Connection $connection, string $tableName, string $csv): string;
+    public function writeDataQueryStatement(Connection $connection, string $tableName, string $csvPath): string;
 
     public function tableExistsQueryStatement(Connection $connection, string $tableName): string;
 

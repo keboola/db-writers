@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Keboola\DbWriterAdapter\Connection;
 
 use Keboola\Component\UserException;
-use Keboola\DbExtractor\Adapter\Exception\UserRetriedException;
 use Keboola\DbWriterAdapter\Exception\DeadConnectionException;
+use Keboola\DbWriterAdapter\Exception\UserRetriedException;
 use Psr\Log\LoggerInterface;
 use Retry\BackOff\ExponentialBackOffPolicy;
 use Retry\Policy\SimpleRetryPolicy;

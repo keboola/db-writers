@@ -8,7 +8,6 @@ use Keboola\DbWriterAdapter\Connection\Connection;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ItemConfig;
 use Keboola\DbWriterConfig\Exception\PropertyNotSetException;
-use SplFileInfo;
 
 class DefaultQueryBuilder implements QueryBuilder
 {
@@ -26,6 +25,7 @@ class DefaultQueryBuilder implements QueryBuilder
         string $tableName,
         bool $isTempTable,
         array $items,
+        ?array $primaryKeys = null,
     ): string {
         $createTable = sprintf(
             'CREATE %s TABLE `%s`',
@@ -36,35 +36,39 @@ class DefaultQueryBuilder implements QueryBuilder
         $filteredItems = array_filter(
             $items,
             function (ItemConfig $itemConfig) {
-                return $itemConfig->getType() !== 'IGNORE';
+                return strtolower($itemConfig->getType()) !== 'ignore';
             },
         );
 
-        $columnsDefinition = implode(
-            ',',
-            array_map(
-                function (ItemConfig $itemConfig) use ($connection) {
-                    return sprintf(
-                        '%s %s%s %s %s',
-                        $connection->quoteIdentifier($itemConfig->getDbName()),
-                        $itemConfig->getType(),
-                        $itemConfig->hasSize() ? sprintf('(%s)', $itemConfig->getSize()) : '',
-                        $itemConfig->getNullable() ? 'NULL' : 'NOT NULL',
-                        $itemConfig->hasDefault() && $itemConfig->getType() !== 'TEXT' ?
-                            'DEFAULT ' . $connection->quote($itemConfig->getDefault()) :
-                            '',
-                    );
-                },
-                $filteredItems,
-            ),
+        $columnsDefinition = array_map(
+            function (ItemConfig $itemConfig) use ($connection) {
+                return sprintf(
+                    '%s %s%s %s %s',
+                    $connection->quoteIdentifier($itemConfig->getDbName()),
+                    $itemConfig->getType(),
+                    $itemConfig->hasSize() ? sprintf('(%s)', $itemConfig->getSize()) : '',
+                    $itemConfig->getNullable() ? 'NULL' : 'NOT NULL',
+                    $itemConfig->hasDefault() && $itemConfig->getType() !== 'TEXT' ?
+                        'DEFAULT ' . $connection->quote($itemConfig->getDefault()) :
+                        '',
+                );
+            },
+            $filteredItems,
         );
+
+        if ($primaryKeys) {
+            $columnsDefinition[] = sprintf(
+                'PRIMARY KEY (%s)',
+                implode(',', array_map(fn($item) => $connection->quoteIdentifier($item), $primaryKeys)),
+            );
+        }
 
         $defaultValues = 'DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;';
 
         return sprintf(
             '%s (%s) %s',
             $createTable,
-            $columnsDefinition,
+            implode(',', $columnsDefinition),
             $defaultValues,
         );
     }
@@ -124,7 +128,7 @@ class DefaultQueryBuilder implements QueryBuilder
         $valuesClause = implode(',', $valuesClauseArr);
 
         return sprintf(
-            'UPDATE %s a INNER JOIN %s b ON %s SET %s',
+            'UPDATE %s a INNER JOIN %s b ON %s SET %s;',
             $connection->quoteIdentifier($exportConfig->getDbName()),
             $connection->quoteIdentifier($stageTableName),
             $joinClause,
@@ -162,7 +166,7 @@ class DefaultQueryBuilder implements QueryBuilder
         }, $exportConfig->getItems());
 
         return sprintf(
-            'INSERT INTO %s (%s) SELECT * FROM `%s`',
+            'INSERT INTO %s (%s) SELECT * FROM %s',
             $connection->quoteIdentifier($exportConfig->getDbName()),
             implode(', ', $columns),
             $connection->quoteIdentifier($stageTableName),
