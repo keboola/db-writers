@@ -9,6 +9,7 @@
         "keboola/retry": "^0.5.1"
     },
     "require-dev": {
+        "ihsw/toxiproxy-php-client": "^2.0",
         "keboola/coding-standard": ">=7.0.2",
         "keboola/csv": "^4.0",
         "keboola/datadir-tests": "^5.3",

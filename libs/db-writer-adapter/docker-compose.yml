@@ -10,6 +10,7 @@ services:
         DB_DATABASE: testdb
     depends_on:
       - mariadb
+      - toxiproxy
 
   dev:
     <<: *app
@@ -24,6 +25,11 @@ services:
     environment:
       MARIADB_DATABASE: testdb
       MARIADB_ROOT_PASSWORD: somePassword
+
+  toxiproxy:
+    image: shopify/toxiproxy
+    depends_on:
+      - mariadb
 
   wait:
     image: waisbrot/wait

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Keboola\DbWriterAdapter\Tests;
 
 use Exception;
+use Ihsw\Toxiproxy\Toxiproxy;
 use Keboola\Csv\CsvWriter;
 use Keboola\DbWriterAdapter\Tests\Traits\PdoCreateConnectionTrait;
 use Keboola\DbWriterAdapter\Tests\Traits\TestDataTrait;
+use Keboola\DbWriterAdapter\Tests\Traits\ToxiProxyTrait;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ItemConfig;
 use Keboola\DbWriterConfig\Exception\UserException;
@@ -21,10 +23,13 @@ abstract class BaseTest extends TestCase
 {
     use TestDataTrait;
     use PdoCreateConnectionTrait;
+    use ToxiProxyTrait;
 
     protected TestLogger $logger;
 
     protected Temp $dataDir;
+
+    protected const TOXIPROXY_HOST = 'toxiproxy';
 
     public function setUp(): void
     {
@@ -32,12 +37,17 @@ abstract class BaseTest extends TestCase
         $this->logger = new TestLogger();
         $this->connection = $this->createPdoConnection();
         $this->dataDir = new Temp();
+        $this->toxiproxy = new Toxiproxy('http://toxiproxy:8474');
         $this->dropAllTables();
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
+
+        // Clear all proxies
+        $this->clearAllProxies();
+
 //        $this->dropAllTables();
     }
 
