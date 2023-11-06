@@ -7,9 +7,7 @@ namespace Keboola\DbWriterAdapter\Tests;
 use Keboola\DbWriterAdapter\Connection\Connection;
 use Keboola\DbWriterAdapter\WriteAdapter;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
-use PDO;
 use PHPUnit\Framework\Assert;
-use function _PHPStan_1308c520e\RingCentral\Psr7\str;
 
 abstract class AbstractWriteAdapterTest extends BaseTest
 {
