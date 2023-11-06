@@ -28,5 +28,7 @@ jobs:
                 run: 'docker build -t $APP_IMAGE .'
             -
                 name: 'Run tests'
-                run: 'docker run ${{env.APP_IMAGE}} composer ci'
+                run: |
+                    docker-compose run --rm wait
+                    docker-compose run --rm app
 
