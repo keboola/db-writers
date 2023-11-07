@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Keboola\DbWriterAdapter\Tests\Traits;
 
 use Keboola\DbWriterAdapter\Connection\Connection;
-use Keboola\DbWriterAdapter\PDO\PdoConnection;
-use PDO;
 
 trait TestDataTrait
 {
-    protected PdoConnection $connection;
+    private Connection $pdoConnection;
 
     protected function getDatabase(): string
     {
@@ -48,7 +46,7 @@ trait TestDataTrait
           DEALLOCATE PREPARE stmt;
         END;
 
-        $this->connection->exec($sql);
+        $this->pdoConnection->exec($sql);
     }
 
     /**
@@ -73,7 +71,7 @@ trait TestDataTrait
          * Extra: string
          * } $result
          */
-        $result = $this->connection->fetchAll($sql, Connection::DEFAULT_MAX_RETRIES);
+        $result = $this->pdoConnection->fetchAll($sql, Connection::DEFAULT_MAX_RETRIES);
         return $result;
     }
 
@@ -83,6 +81,6 @@ trait TestDataTrait
     protected function getTableData(string $table): array
     {
         $sql = sprintf('SELECT * FROM `%s`', $table);
-        return $this->connection->fetchAll($sql, Connection::DEFAULT_MAX_RETRIES);
+        return $this->pdoConnection->fetchAll($sql, Connection::DEFAULT_MAX_RETRIES);
     }
 }

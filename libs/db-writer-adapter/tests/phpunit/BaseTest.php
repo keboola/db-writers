@@ -15,7 +15,6 @@ use Keboola\DbWriterConfig\Configuration\ValueObject\ItemConfig;
 use Keboola\DbWriterConfig\Exception\UserException;
 use Keboola\Temp\Temp;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 use Psr\Log\Test\TestLogger;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -35,9 +34,9 @@ abstract class BaseTest extends TestCase
     {
         parent::setUp();
         $this->logger = new TestLogger();
-        $this->connection = $this->createPdoConnection();
         $this->dataDir = new Temp();
         $this->toxiproxy = new Toxiproxy('http://toxiproxy:8474');
+        $this->pdoConnection = $this->createPdoConnection();
         $this->dropAllTables();
     }
 

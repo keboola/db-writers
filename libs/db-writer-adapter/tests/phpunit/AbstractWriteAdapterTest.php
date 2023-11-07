@@ -11,6 +11,8 @@ use PHPUnit\Framework\Assert;
 
 abstract class AbstractWriteAdapterTest extends BaseTest
 {
+    protected Connection $connection;
+
     abstract protected function createWriteAdapter(): WriteAdapter;
 
     public function testCreateTable(): void

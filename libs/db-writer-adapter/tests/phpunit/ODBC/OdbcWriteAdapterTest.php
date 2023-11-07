@@ -2,34 +2,34 @@
 
 declare(strict_types=1);
 
-namespace Keboola\DbWriterAdapter\Tests\PDO;
+namespace Keboola\DbWriterAdapter\Tests\ODBC;
 
 use Keboola\DbWriterAdapter\Connection\Connection;
-use Keboola\DbWriterAdapter\PDO\PdoConnection;
-use Keboola\DbWriterAdapter\PDO\PdoWriteAdapter;
+use Keboola\DbWriterAdapter\ODBC\OdbcConnection;
+use Keboola\DbWriterAdapter\ODBC\OdbcWriteAdapter;
 use Keboola\DbWriterAdapter\Query\DefaultQueryBuilder;
 use Keboola\DbWriterAdapter\Tests\AbstractWriteAdapterTest;
-use Keboola\DbWriterAdapter\Tests\Traits\PdoCreateConnectionTrait;
+use Keboola\DbWriterAdapter\Tests\Traits\OdbcCreateConnectionTrait;
 use PHPUnit\Framework\Assert;
 
-class PdoWriteAdapterTest extends AbstractWriteAdapterTest
+class OdbcWriteAdapterTest extends AbstractWriteAdapterTest
 {
-    use PdoCreateConnectionTrait;
+    use OdbcCreateConnectionTrait;
 
-    /** @var PdoConnection $connection */
+    /** @var OdbcConnection $connection */
     protected Connection $connection;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->connection = $this->createPdoConnection();
+        $this->connection = $this->createOdbcConnection();
     }
 
     protected function createWriteAdapter(
         ?string $host = null,
         ?int $port = null,
-    ): PdoWriteAdapter {
-        return new PdoWriteAdapter(
+    ): OdbcWriteAdapter {
+        return new OdbcWriteAdapter(
             $this->connection,
             new DefaultQueryBuilder(),
             $this->logger,
@@ -38,6 +38,6 @@ class PdoWriteAdapterTest extends AbstractWriteAdapterTest
 
     public function testGetName(): void
     {
-        Assert::assertSame('PDO', $this->createWriteAdapter()->getName());
+        Assert::assertSame('ODBC', $this->createWriteAdapter()->getName());
     }
 }
