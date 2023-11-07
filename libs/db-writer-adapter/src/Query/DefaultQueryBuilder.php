@@ -78,15 +78,15 @@ class DefaultQueryBuilder implements QueryBuilder
         string $tableName,
         string $csvPath,
     ): string {
-        $query = "
-            LOAD DATA LOCAL INFILE '%s'
-            INTO TABLE %s
-            CHARACTER SET utf8
-            FIELDS TERMINATED BY ','
-            OPTIONALLY ENCLOSED BY '\"'
-            ESCAPED BY ''
-            IGNORE 1 LINES
-        ";
+        $query = <<<SQL
+LOAD DATA LOCAL INFILE '%s'
+INTO TABLE %s
+CHARACTER SET utf8
+FIELDS TERMINATED BY ','
+OPTIONALLY ENCLOSED BY '\"'
+ESCAPED BY ''
+IGNORE 1 LINES
+SQL;
 
         return sprintf(
             $query,

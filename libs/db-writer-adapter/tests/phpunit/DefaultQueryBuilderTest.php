@@ -6,6 +6,7 @@ namespace Keboola\DbWriterAdapter\Tests;
 
 use Keboola\DbWriterAdapter\Connection\Connection;
 use Keboola\DbWriterAdapter\Query\DefaultQueryBuilder;
+use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ItemConfig;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
@@ -128,36 +129,157 @@ class DefaultQueryBuilderTest extends TestCase
 
     public function testWriteDataQuery(): void
     {
-        Assert::assertTrue(true);
+
+        $query = $this->queryBuilder->writeDataQueryStatement(
+            $this->connection,
+            'test',
+            '/path/to/csvfile.csv',
+        );
+
+        $expectedQuery = <<<SQL
+LOAD DATA LOCAL INFILE '/path/to/csvfile.csv'
+INTO TABLE `test`
+CHARACTER SET utf8
+FIELDS TERMINATED BY ','
+OPTIONALLY ENCLOSED BY '\"'
+ESCAPED BY ''
+IGNORE 1 LINES
+SQL;
+
+        Assert::assertEquals(
+            $expectedQuery,
+            $query,
+        );
     }
 
     public function testTableExistsQuery(): void
     {
-        Assert::assertTrue(true);
+        Assert::assertEquals(
+            'SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = \'test\'',
+            $this->queryBuilder->tableExistsQueryStatement($this->connection, 'test'),
+        );
     }
 
     public function testUpsertUpdateRowsQuery(): void
     {
-        Assert::assertTrue(true);
+        $config = $this->getExportConfig();
+
+        $query = $this->queryBuilder->upsertUpdateRowsQueryStatement(
+            $this->connection,
+            $config,
+            'test',
+        );
+
+        Assert::assertEquals(
+            'UPDATE `test` a INNER JOIN `test` b ON a.`id` = b.`id` AND a.`name` = b.`name` ' .
+            'SET a.`id` = b.`id`,a.`name` = b.`name`,a.`age` = b.`age`;',
+            $query,
+        );
     }
 
     public function testUpsertDeleteRowsQuery(): void
     {
-        Assert::assertTrue(true);
+        $config = $this->getExportConfig();
+
+        $query = $this->queryBuilder->upsertDeleteRowsQueryStatement(
+            $this->connection,
+            $config,
+            'test',
+        );
+
+        Assert::assertEquals(
+            'DELETE a.* FROM `test` a INNER JOIN `test` b ON a.`id` = b.`id` AND a.`name` = b.`name`',
+            $query,
+        );
     }
 
     public function testUpsertQuery(): void
     {
-        Assert::assertTrue(true);
+        $config = $this->getExportConfig();
+
+        $query = $this->queryBuilder->upsertQueryStatement(
+            $this->connection,
+            $config,
+            'test',
+        );
+
+        Assert::assertEquals(
+            'INSERT INTO `test` (`id`, `name`, `age`) SELECT * FROM `test`',
+            $query,
+        );
     }
 
     public function testListTablesQuery(): void
     {
-        Assert::assertTrue(true);
+        Assert::assertEquals(
+            $this->queryBuilder->listTablesQueryStatement($this->connection),
+            'SHOW TABLES',
+        );
     }
 
     public function testTableInfoQuery(): void
     {
-        Assert::assertTrue(true);
+        Assert::assertEquals(
+            $this->queryBuilder->tableInfoQueryStatement($this->connection, 'test'),
+            'DESCRIBE `test`',
+        );
+    }
+
+    private function getExportConfig(): ExportConfig
+    {
+        $exportConfig = [
+            'tableId' => 'test',
+            'dbName' => 'test',
+            'data_dir' => '/data',
+            'writer_class' => 'Common',
+            'db' => [
+                'database' => 'test',
+                'user' => 'test',
+            ],
+            'primary_key' => [
+                'id',
+                'name',
+            ],
+            'items' => [
+                [
+                    'name' => 'id',
+                    'dbName' => 'id',
+                    'type' => 'INT',
+                    'size' => null,
+                    'nullable' => false,
+                    'default' => null,
+                ],
+                [
+                    'name' => 'name',
+                    'dbName' => 'name',
+                    'type' => 'VARCHAR',
+                    'size' => '255',
+                    'nullable' => false,
+                    'default' => null,
+                ],
+                [
+                    'name' => 'age',
+                    'dbName' => 'age',
+                    'type' => 'INT',
+                    'size' => null,
+                    'nullable' => true,
+                    'default' => '18',
+                ],
+            ],
+        ];
+
+        $inputMapping = [
+            [
+                'source' => 'test',
+                'destination' => 'test',
+                'columns' => [
+                    'id',
+                    'name',
+                    'age',
+                ],
+            ],
+        ];
+
+        return ExportConfig::fromArray($exportConfig, $inputMapping);
     }
 }
