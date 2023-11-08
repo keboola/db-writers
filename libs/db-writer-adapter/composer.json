@@ -5,8 +5,6 @@
     "require": {
         "php": "^8.2",
         "ext-mbstring": "*",
-        "ext-odbc": "*",
-        "ext-pdo": "*",
         "keboola/db-writer-config": "dev-ondra-init-config",
         "keboola/php-component": "^9.0",
         "keboola/retry": "^0.5.1",
