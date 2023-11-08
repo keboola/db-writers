@@ -6,6 +6,7 @@ namespace Keboola\DbWriterConfig\Tests\ValueObject;
 
 use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
 use Keboola\DbWriterConfig\Exception\PropertyNotSetException;
+use Keboola\DbWriterConfig\Exception\UserException;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
@@ -120,5 +121,47 @@ class ExportConfigTest extends TestCase
         Assert::assertFalse($itemConfig->hasSize());
         Assert::assertFalse($itemConfig->getNullable());
         Assert::assertFalse($itemConfig->hasDefault());
+    }
+
+    public function testMissingInputMapping(): void
+    {
+        $config = [
+            'data_dir' => 'data_dir',
+            'writer_class' => 'writer_class',
+            'db' => [
+                'host' => 'host',
+                'port' => '123',
+                'database' => 'database',
+                'user' => 'user',
+                '#password' => 'password',
+            ],
+            'tableId' => 'tableId',
+            'dbName' => 'dbName',
+            'incremental' => true,
+            'export' => false,
+            'primary_key' => ['pk1', 'pk2'],
+            'items' => [
+                [
+                    'name' => 'nameValue',
+                    'dbName' => 'dbNameValues',
+                    'type' => 'typeValue',
+                    'size' => 'sizeValue',
+                    'nullable' => true,
+                    'default' => 'defaultValue',
+                ],
+            ],
+        ];
+
+        $inputMapping = [
+            [
+                'source' => 'unknownTable',
+                'destination' => 'destination',
+                'columns' => [],
+            ],
+        ];
+
+        $this->expectException(UserException::class);
+        $this->expectExceptionMessage('Table "tableId" in storage input mapping cannot be found.');
+        ExportConfig::fromArray($config, $inputMapping);
     }
 }

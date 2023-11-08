@@ -111,5 +111,18 @@ class DatabaseConfigTest extends TestCase
 
         Assert::assertEquals('database', $exportDatabaseConfig->getDatabase());
         Assert::assertEquals('username', $exportDatabaseConfig->getUser());
+        Assert::assertEquals(
+            [
+                'database' => 'database',
+                'user' => 'username',
+                'host' => null,
+                'port' => null,
+                '#password' => null,
+                'schema' => null,
+                'ssh' => null,
+
+            ],
+            $exportDatabaseConfig->toArray(),
+        );
     }
 }
