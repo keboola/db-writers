@@ -4,9 +4,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-mbstring": "*",
+        "ext-odbc": "*",
+        "ext-pdo": "*",
         "keboola/db-writer-config": "dev-ondra-init-config",
         "keboola/php-component": "^9.0",
-        "keboola/retry": "^0.5.1"
+        "keboola/retry": "^0.5.1",
+        "psr/log": "^1.1"
     },
     "require-dev": {
         "ihsw/toxiproxy-php-client": "^2.0",
@@ -17,7 +21,6 @@
         "php-parallel-lint/php-parallel-lint": "^1.3",
         "phpstan/phpstan": "^1.4",
         "phpunit/phpunit": "^9.5",
-        "psr/log": "^1.1",
         "symfony/filesystem": "^6.3",
         "symfony/process": "^5.0"
     },
