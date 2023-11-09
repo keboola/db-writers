@@ -42,7 +42,7 @@ readonly class ItemConfig
 
     public function hasSize(): bool
     {
-        return $this->size !== null;
+        return !empty($this->size);
     }
 
     public function hasDefault(): bool

@@ -65,6 +65,24 @@ class ConfigTest extends TestCase
                 'db' => $this->getDbConfigurationArray(),
                 'tableId' => 'tableColumns',
                 'dbName' => 'tableColumns',
+                'items' => [
+                    [
+                        'name' => 'name',
+                        'dbName' => 'dbName',
+                        'type' => 'type',
+                        'size' => 123,
+                        'nullable' => true,
+                        'default' => 'default',
+                    ],
+                    [
+                        'name' => 'name1',
+                        'dbName' => 'dbName2',
+                        'type' => 'type',
+                        'size' => '456',
+                        'nullable' => true,
+                        'default' => 'default',
+                    ],
+                ],
             ],
         ];
 
@@ -81,7 +99,24 @@ class ConfigTest extends TestCase
                 'dbName' => 'tableColumns',
                 'export' => true,
                 'primaryKey' => [],
-                'items' => [],
+                'items' => [
+                    [
+                        'name' => 'name',
+                        'dbName' => 'dbName',
+                        'type' => 'type',
+                        'size' => '123',
+                        'nullable' => true,
+                        'default' => 'default',
+                    ],
+                    [
+                        'name' => 'name1',
+                        'dbName' => 'dbName2',
+                        'type' => 'type',
+                        'size' => '456',
+                        'nullable' => true,
+                        'default' => 'default',
+                    ],
+                ],
 
             ],
         ];
