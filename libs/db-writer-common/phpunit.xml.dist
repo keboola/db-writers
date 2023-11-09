@@ -9,7 +9,12 @@
          stopOnFailure="false"
          bootstrap="vendor/autoload.php">
 
-    <testsuite name="DB Writer Common Test Suite">
-        <directory>tests/phpunit</directory>
-    </testsuite>
+    <testsuites>
+        <testsuite name="DB Writer Common PHPunit">
+            <directory>tests/phpunit</directory>
+        </testsuite>
+        <testsuite name="DB Writer MySQL Datadir">
+            <directory>tests/functional</directory>
+        </testsuite>
+    </testsuites>
 </phpunit>

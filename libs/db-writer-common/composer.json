@@ -27,13 +27,17 @@
   },
   "autoload-dev": {
     "psr-4": {
+      "Keboola\\DbWriter\\Traits\\": "tests/Traits/",
+      "Keboola\\DbWriter\\TestsFunctional\\": "tests/functional/",
       "Keboola\\DbWriter\\Tests\\": "tests/phpunit/"
     }
   },
   "scripts": {
-    "tests-phpunit": "phpunit",
+    "tests-phpunit": "phpunit --testsuite unit",
+    "tests-datadir": "phpunit --testsuite functional",
     "tests": [
-      "@tests-phpunit"
+      "@tests-phpunit",
+      "@tests-datadir"
     ],
     "phpcs": "phpcs -n --ignore=vendor,tests --extensions=php .",
     "phpcbf": "phpcbf -n --ignore=vendor --extensions=php .",
@@ -57,7 +61,8 @@
   },
   "require-dev": {
     "keboola/coding-standard": "^15.0",
+    "keboola/datadir-tests": "dev-ondra-update-packages",
     "phpstan/phpstan": "^1.10",
-    "phpunit/phpunit": "^10.4"
+    "phpunit/phpunit": "^9.6"
   }
 }

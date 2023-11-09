@@ -53,6 +53,7 @@ class Common extends BaseWriter
         return new PdoWriteAdapter(
             $this->connection,
             new DefaultQueryBuilder(),
+            $this->logger,
         );
     }
 }

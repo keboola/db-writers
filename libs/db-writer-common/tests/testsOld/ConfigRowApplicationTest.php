@@ -2,17 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Keboola\DbWriter\Tests;
+namespace testsOld;
 
-use Keboola\Csv\CsvWriter;
 use Keboola\DbWriter\Application;
-use Keboola\DbWriter\Configuration\ConfigDefinition;
-use Keboola\DbWriter\Configuration\Validator;
 use Keboola\DbWriter\Exception\UserException;
-use Keboola\DbWriter\Test\BaseTest;
+use Keboola\DbWriter\Tests\CsvWriter;
+use Keboola\DbWriter\Tests\TestLogger;
 use PDO;
 use Psr\Log\LoggerInterface;
-use Psr\Log\Test\TestLogger;
 use SplFileInfo;
 
 class ConfigRowApplicationTest extends BaseTest
@@ -25,7 +22,6 @@ class ConfigRowApplicationTest extends BaseTest
     public function setUp(): void
     {
         parent::setUp();
-        $validate = Validator::getValidator(new ConfigDefinition());
         $this->config = $this->getConfig();
         $this->config['parameters'] = $validate($this->config['parameters']);
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Keboola\DbWriter\Tests;
+namespace testsOld;
 
 use Keboola\DbWriter\Configuration\ConfigDefinition;
 use Keboola\DbWriter\Configuration\Validator;

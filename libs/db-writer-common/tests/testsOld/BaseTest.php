@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Keboola\DbWriter\Test;
+namespace testsOld;
 
 use Exception;
 use Keboola\DbWriter\WriterFactory;

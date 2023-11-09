@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Keboola\DbWriter\Tests;
+namespace testsOld;
 
-use Keboola\Csv\CsvWriter;
 use Keboola\DbWriter\Application;
-use Keboola\DbWriter\Configuration\ConfigDefinition;
-use Keboola\DbWriter\Configuration\Validator;
 use Keboola\DbWriter\Exception\UserException;
 use Keboola\DbWriter\Test\BaseTest;
+use Keboola\DbWriter\Tests\ConfigDefinition;
+use Keboola\DbWriter\Tests\CsvWriter;
+use Keboola\DbWriter\Tests\TestLogger;
+use Keboola\DbWriter\Tests\Validator;
 use Keboola\DbWriter\Writer;
 use PDO;
 use Psr\Log\LoggerInterface;
-use Psr\Log\Test\TestLogger;
 use SplFileInfo;
 
 class ApplicationTest extends BaseTest
@@ -141,23 +141,6 @@ class ApplicationTest extends BaseTest
         $this->config['parameters']['tables'][1] = $simpleTableCfg;
 
         $this->runApplication($this->getApp($this->config));
-    }
-
-    public function testGetTablesInfo(): void
-    {
-        $this->runApplication($this->getApp($this->config));
-
-        $config = $this->config;
-        $config['action'] = 'getTablesInfo';
-        $result = $this->getApp($config)->run();
-        $resultJson = json_decode($result, true);
-
-        $this->assertContains('encoding', array_keys($resultJson['tables']));
-    }
-
-    protected function getApp(array $config, ?LoggerInterface $logger = null): Application
-    {
-        return new Application($config, $logger ?: new TestLogger());
     }
 
     protected function runApplication(Application $app): void

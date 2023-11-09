@@ -35,6 +35,10 @@ RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-configure intl \
     && docker-php-ext-install intl
 
+# Xdebug
+RUN pecl install xdebug \
+ && docker-php-ext-enable xdebug
+
 ## Composer - deps always cached unless changed
 # First copy only composer files
 COPY composer.* /code/

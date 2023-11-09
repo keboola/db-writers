@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Keboola\DbWriter\Tests\Writer;
+namespace testsOld;
 
 use Keboola\Csv\CsvReader;
 use Keboola\Csv\CsvWriter;

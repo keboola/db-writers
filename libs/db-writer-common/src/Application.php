@@ -38,8 +38,10 @@ class Application extends BaseComponent
 
         if (!$this->isRowConfiguration($parameters)) {
             $filteredTables = array_filter($parameters['tables'], fn($table) => $table['export']);
+            unset($parameters['tables']);
             foreach ($filteredTables as $filteredTable) {
                 $filteredTable = $this->validateTableItems($filteredTable);
+                $filteredTable = array_merge($parameters, $filteredTable);
                 $writer->write($this->createExportConfig($filteredTable));
             }
         } else {
@@ -102,7 +104,7 @@ class Application extends BaseComponent
 
     protected function getConfigDefinitionClass(): string
     {
-        if ($this->isRowConfiguration($this->getRawConfig())) {
+        if ($this->isRowConfiguration($this->getRawConfig()['parameters'])) {
             $action = $this->getRawConfig()['action'] ?? 'run';
             if ($action === 'run') {
                 return ConfigRowDefinition::class;

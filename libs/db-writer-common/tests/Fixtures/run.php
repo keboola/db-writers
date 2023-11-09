@@ -6,9 +6,13 @@ use Keboola\CommonExceptions\UserExceptionInterface;
 use Keboola\Component\Logger;
 use Keboola\DbWriter\Application;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 $logger = new Logger();
+
+$app = new Application($logger);
+$app->execute();
+exit(0);
 try {
     $app = new Application($logger);
     $app->execute();
