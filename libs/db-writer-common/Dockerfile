@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git  \
     bzip2  \
     time  \
-    libzip-dev  \
+    libzip-dev \
+    ssh \
     openssl  \
     unzip  \
     procps \

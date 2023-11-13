@@ -10,9 +10,6 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 $logger = new Logger();
 
-$app = new Application($logger);
-$app->execute();
-exit(0);
 try {
     $app = new Application($logger);
     $app->execute();

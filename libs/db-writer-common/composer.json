@@ -61,6 +61,7 @@
   },
   "require-dev": {
     "keboola/coding-standard": "^15.0",
+    "keboola/csv": "^4.0",
     "keboola/datadir-tests": "dev-ondra-update-packages",
     "phpstan/phpstan": "^1.10",
     "phpunit/phpunit": "^9.6"
