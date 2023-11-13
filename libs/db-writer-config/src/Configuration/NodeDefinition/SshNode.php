@@ -14,7 +14,6 @@ class SshNode extends ArrayNodeDefinition implements NodeInterface
     public const NODE_NAME = 'ssh';
 
     private const SSH_REQUIRED_PARAMS = [
-        'user',
         'sshHost',
         'keys',
     ];

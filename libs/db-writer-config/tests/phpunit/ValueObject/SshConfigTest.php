@@ -21,8 +21,8 @@ class SshConfigTest extends TestCase
             'sshHost' => 'sshHost',
             'sshPort' => 22,
             'remoteHost' => 'remoteHost',
-            'remotePort' => 3306,
-            'localPort' => 3306,
+            'remotePort' => '3306',
+            'localPort' => '3306',
             'user' => 'user',
         ];
 
