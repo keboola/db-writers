@@ -13,20 +13,20 @@ use Psr\Log\LoggerInterface;
 
 readonly class Validator
 {
-    public function __construct(public LoggerInterface $logger, public BaseConfig $config)
+    public function __construct(public LoggerInterface $logger)
     {
     }
 
     /**
      * @throws InvalidDatabaseHostException
      */
-    public function validateDatabaseHost(): void
+    public function validateDatabaseHost(BaseConfig $config): void
     {
-        if (!isset($this->config->getImageParameters()['approvedHostnames'])) {
+        if (!isset($config->getImageParameters()['approvedHostnames'])) {
             return;
         }
-        $approvedHostnames = $this->config->getImageParameters()['approvedHostnames'];
-        $db = $this->config->getParameters()['db'];
+        $approvedHostnames = $config->getImageParameters()['approvedHostnames'];
+        $db = $config->getParameters()['db'];
         $validHostname = array_filter($approvedHostnames, function ($v) use ($db) {
             return $v['host'] === $db['host'] && $v['port'] === $db['port'];
         });
@@ -42,6 +42,9 @@ readonly class Validator
         }
     }
 
+    /**
+     * @throws ApplicationException
+     */
     public function validateTableItems(string $tablePath, array $items): array
     {
         $manifestPath = $tablePath . '.manifest';

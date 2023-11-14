@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Keboola\DbWriter\TestsFunctional;
 
 use Keboola\Csv\CsvWriter;
+use Keboola\Csv\Exception;
+use Keboola\Csv\InvalidArgumentException;
 use Keboola\DatadirTests\DatadirTestCase;
 use Keboola\DatadirTests\DatadirTestSpecificationInterface;
 use Keboola\DbWriter\Traits\CloseSshTunnelsTrait;
@@ -18,6 +20,10 @@ class DatadirTest extends DatadirTestCase
     use DropAllTablesTrait;
 
     public PdoConnection $connection;
+
+    protected string $testProjectDir;
+
+    protected string $testTempDir;
 
     protected function getScript(): string
     {
@@ -66,7 +72,11 @@ class DatadirTest extends DatadirTestCase
         $this->assertMatchesSpecification($specification, $process, $tempDatadir->getTmpFolder());
     }
 
-    protected function exportTablesData($testTempDir): void
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     */
+    protected function exportTablesData(string $testTempDir): void
     {
         $sqlTables = <<<SQL
 SELECT `table_schema`,`table_name`
@@ -74,6 +84,7 @@ FROM information_schema.tables
 WHERE TABLE_SCHEMA NOT IN ("performance_schema", "mysql", "information_schema", "sys");
 SQL;
 
+        /** @var array<array> $tables */
         $tables = $this->connection->fetchAll($sqlTables, 3);
 
         foreach ($tables as $table) {

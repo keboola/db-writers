@@ -39,12 +39,12 @@
       "@tests-phpunit",
       "@tests-datadir"
     ],
-    "phpcs": "phpcs -n --ignore=vendor,tests --extensions=php .",
+    "phpcs": "phpcs -n --ignore=vendor --extensions=php .",
     "phpcbf": "phpcbf -n --ignore=vendor --extensions=php .",
-    "phpstan": "phpstan analyse ./src --level=max --no-progress -c phpstan.neon",
+    "phpstan": "phpstan analyse ./src ./tests --level=max --no-progress -c phpstan.neon",
     "build": [
-      "@phpstan",
       "@phpcs",
+      "@phpstan",
       "@tests"
     ],
     "ci": [

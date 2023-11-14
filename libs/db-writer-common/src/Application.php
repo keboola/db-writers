@@ -118,7 +118,7 @@ class Application extends BaseComponent
 
     protected function getValidator(): Validator
     {
-        return new Validator($this->getLogger(), $this->getConfig());
+        return new Validator($this->getLogger());
     }
 
     private function getInputTablePath(string $tableId): string
@@ -154,7 +154,7 @@ class Application extends BaseComponent
     private function checkDatabaseHost(): void
     {
         $checker = $this->getValidator();
-        $checker->validateDatabaseHost();
+        $checker->validateDatabaseHost($this->getConfig());
     }
 
     private function isRowConfiguration(array $parameters): bool
