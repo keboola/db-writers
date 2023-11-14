@@ -25,6 +25,7 @@ services:
     image: waisbrot/wait
     links:
       - mysql
+      - sshproxy
     environment:
       - TARGETS=mysql:3306,sshproxy:22
       - TIMEOUT=120
