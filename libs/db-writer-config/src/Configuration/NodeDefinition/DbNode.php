@@ -56,7 +56,10 @@ class DbNode extends ArrayNodeDefinition implements NodeInterface
 
     protected function addPortNode(NodeBuilder $builder): void
     {
-        $builder->scalarNode('port');
+        $builder
+            ->scalarNode('port')
+            ->beforeNormalization()
+            ->always(fn($v) => (string) $v);
     }
 
     protected function addDatabaseNode(NodeBuilder $builder): void
