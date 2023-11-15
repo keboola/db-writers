@@ -20,7 +20,7 @@
     },
     "tableId": "simple",
     "dbName": "simple",
-    "incremental": true,
+    "incremental": false,
     "primaryKey": [
       "id"
     ],

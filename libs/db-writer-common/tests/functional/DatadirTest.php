@@ -72,6 +72,15 @@ class DatadirTest extends DatadirTestCase
         $this->assertMatchesSpecification($specification, $process, $tempDatadir->getTmpFolder());
     }
 
+    protected function modifyConfigJsonContent(string $content): string
+    {
+        $content = parent::modifyConfigJsonContent($content);
+        /** @var array<array> $config */
+        $config = (array) json_decode($content, true);
+        $config['parameters']['data_dir'] = $this->temp->getTmpFolder();
+        return (string) json_encode($config);
+    }
+
     /**
      * @throws Exception
      * @throws InvalidArgumentException

@@ -1,7 +1,5 @@
 Creating PDO connection to "mysql:host=mysql;port=3306;dbname=testdb;charset=utf8".
 Table "encoding" created
 Data written to table "encoding".
-Temporary Table "%s" created
-Data written to table "%s".
 Table "simple" created
-Data upserted to table "simple".
+Data written to table "simple".
