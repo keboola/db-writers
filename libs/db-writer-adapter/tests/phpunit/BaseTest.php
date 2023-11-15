@@ -58,7 +58,7 @@ abstract class BaseTest extends TestCase
      *     writer_class?: string,
      *     export?: bool,
      *     items?: array<int, array<string, mixed>>,
-     *     primary_key?: ?array<int, string>,
+     *     primaryKey?: ?array<int, string>,
      *     db?: array<string, string>
      * } $data
      * @throws UserException
@@ -86,7 +86,7 @@ abstract class BaseTest extends TestCase
                 'nullable' => true,
             ],
         ];
-        $data['primary_key'] = $data['primary_key'] ?? ['id'];
+        $data['primaryKey'] = $data['primaryKey'] ?? ['id'];
         $data['db'] = $data['db'] ?? $this->getDbConfig();
 
         if (!$inputMapping) {

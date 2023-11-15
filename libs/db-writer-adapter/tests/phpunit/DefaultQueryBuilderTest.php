@@ -236,7 +236,7 @@ SQL;
                 'database' => 'test',
                 'user' => 'test',
             ],
-            'primary_key' => [
+            'primaryKey' => [
                 'id',
                 'name',
             ],

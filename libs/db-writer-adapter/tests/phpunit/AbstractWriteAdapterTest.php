@@ -328,7 +328,7 @@ abstract class AbstractWriteAdapterTest extends BaseTest
     public function testUpsertNoPK(): void
     {
         $config = $this->createExportConfig([
-            'primary_key' => null,
+            'primaryKey' => null,
         ]);
 
         $this->createWriteAdapter()->create(
