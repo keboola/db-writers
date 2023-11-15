@@ -72,15 +72,6 @@ abstract class BaseWriteAdapter implements WriteAdapter
 
     public function upsert(ExportConfig $exportConfig, string $stageTableName): void
     {
-        if (!$this->tableExists($exportConfig->getDbName())) {
-            $this->create(
-                $exportConfig->getDbName(),
-                false,
-                $exportConfig->getItems(),
-                $exportConfig->hasPrimaryKey() ? $exportConfig->getPrimaryKey() : null,
-            );
-        }
-
         if ($exportConfig->hasPrimaryKey()) {
             $this->logger->info(sprintf(
                 'Table "%s" has primary key, using upsert.',
