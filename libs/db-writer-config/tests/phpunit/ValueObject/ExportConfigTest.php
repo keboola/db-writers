@@ -31,7 +31,7 @@ class ExportConfigTest extends TestCase
             'dbName' => 'dbName',
             'incremental' => true,
             'export' => false,
-            'primary_key' => ['pk1', 'pk2'],
+            'primaryKey' => ['pk1', 'pk2'],
             'items' => [
                 [
                     'name' => 'nameValue',
@@ -60,7 +60,7 @@ class ExportConfigTest extends TestCase
         Assert::assertSame($config['dbName'], $exportConfig->getDbName());
         Assert::assertSame($config['incremental'], $exportConfig->isIncremental());
         Assert::assertSame($config['export'], $exportConfig->isExport());
-        Assert::assertSame($config['primary_key'], $exportConfig->getPrimaryKey());
+        Assert::assertSame($config['primaryKey'], $exportConfig->getPrimaryKey());
 
         $databaseConfig = $exportConfig->getDatabaseConfig();
         Assert::assertSame($config['db']['host'], $databaseConfig->getHost());
@@ -139,7 +139,7 @@ class ExportConfigTest extends TestCase
             'dbName' => 'dbName',
             'incremental' => true,
             'export' => false,
-            'primary_key' => ['pk1', 'pk2'],
+            'primaryKey' => ['pk1', 'pk2'],
             'items' => [
                 [
                     'name' => 'nameValue',

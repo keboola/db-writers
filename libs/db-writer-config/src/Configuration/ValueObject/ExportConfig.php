@@ -50,7 +50,7 @@ readonly class ExportConfig
             $config['dbName'],
             $config['incremental'] ?? false,
             $config['export'] ?? true,
-            $config['primary_key'] ?? null,
+            !empty($config['primaryKey']) ? $config['primaryKey'] : null,
             array_map(fn($v) => ItemConfig::fromArray($v), $config['items']),
             $tableFilePath,
         );
