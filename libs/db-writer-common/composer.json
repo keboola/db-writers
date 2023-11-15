@@ -27,7 +27,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Keboola\\DbWriter\\Traits\\": "tests/Traits/",
+      "Keboola\\DbWriter\\Traits\\": "tests/traits/",
       "Keboola\\DbWriter\\TestsFunctional\\": "tests/functional/",
       "Keboola\\DbWriter\\Tests\\": "tests/phpunit/"
     }
