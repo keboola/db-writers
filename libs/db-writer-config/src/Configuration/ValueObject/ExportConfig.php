@@ -19,7 +19,7 @@ readonly class ExportConfig
      *     dbName: string,
      *     incremental?: bool,
      *     export?: bool,
-     *     primary_key?: string[],
+     *     primaryKey?: string[],
      *     items: array
      * }
      * @param $inputMapping array{
