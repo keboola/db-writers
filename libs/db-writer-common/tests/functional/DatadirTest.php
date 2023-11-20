@@ -9,8 +9,8 @@ use Keboola\Csv\Exception;
 use Keboola\Csv\InvalidArgumentException;
 use Keboola\DatadirTests\DatadirTestCase;
 use Keboola\DatadirTests\DatadirTestSpecificationInterface;
-use Keboola\DbWriter\Traits\CloseSshTunnelsTrait;
-use Keboola\DbWriter\Traits\DropAllTablesTrait;
+use Keboola\DbWriter\TestsTraits\CloseSshTunnelsTrait;
+use Keboola\DbWriter\TestsTraits\DropAllTablesTrait;
 use Keboola\DbWriterAdapter\PDO\PdoConnection;
 use RuntimeException;
 

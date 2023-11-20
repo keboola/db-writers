@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Keboola\DbWriter\Traits;
+namespace Keboola\DbWriter\TestsTraits;
 
 use Keboola\DbWriterAdapter\PDO\PdoConnection;
 
