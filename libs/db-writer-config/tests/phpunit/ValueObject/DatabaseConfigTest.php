@@ -28,7 +28,7 @@ class DatabaseConfigTest extends TestCase
         Assert::assertTrue($exportDatabaseConfig->hasSchema());
 
         Assert::assertEquals('testHost.local', $exportDatabaseConfig->getHost());
-        Assert::assertEquals(12345, $exportDatabaseConfig->getPort());
+        Assert::assertEquals('12345', $exportDatabaseConfig->getPort());
         Assert::assertEquals('secretPassword', $exportDatabaseConfig->getPassword());
         Assert::assertEquals('database', $exportDatabaseConfig->getDatabase());
         Assert::assertEquals('schema', $exportDatabaseConfig->getSchema());

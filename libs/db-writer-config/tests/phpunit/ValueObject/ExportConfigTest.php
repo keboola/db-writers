@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Keboola\DbWriterConfig\Tests\ValueObject;
 
+use Keboola\DbWriterConfig\Config;
+use Keboola\DbWriterConfig\Configuration\ConfigRowDefinition;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
 use Keboola\DbWriterConfig\Exception\PropertyNotSetException;
 use Keboola\DbWriterConfig\Exception\UserException;

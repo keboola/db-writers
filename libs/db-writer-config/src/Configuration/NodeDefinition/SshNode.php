@@ -65,7 +65,9 @@ class SshNode extends ArrayNodeDefinition implements NodeInterface
 
     protected function addSshPortNode(NodeBuilder $builder): void
     {
-        $builder->scalarNode('sshPort');
+        $builder
+            ->scalarNode('sshPort')
+            ->beforeNormalization()->always(fn($v) => (string) $v)->end();
     }
 
     protected function addRemoteHostNode(NodeBuilder $builder): void

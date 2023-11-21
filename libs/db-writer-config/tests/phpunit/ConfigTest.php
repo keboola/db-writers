@@ -173,6 +173,102 @@ class ConfigTest extends TestCase
         $this->assertEquals($configurationArray, $config->getData());
     }
 
+
+
+    public function testIntValues(): void
+    {
+        $config = [
+            'parameters' => [
+                'data_dir' => 'data_dir',
+                'writer_class' => 'writer_class',
+                'db' => [
+                    'host' => 'host',
+                    'port' => 12345, // <<< INT
+                    'database' => 'database',
+                    'user' => 'user',
+                    '#password' => 'password',
+                    'ssh' => [
+                        'enabled' => true,
+                        'keys' => [
+                            '#private' => 'private',
+                            'public' => 'public',
+                        ],
+                        'sshHost' => 'sshHost',
+                        'sshPort' => 22, // <<< INT
+                    ],
+                ],
+                'tableId' => 'tableId',
+                'dbName' => 'dbName',
+                'incremental' => true,
+                'export' => false,
+                'primaryKey' => ['pk1', 'pk2'],
+                'items' => [
+                    [
+                        'name' => 'nameValue',
+                        'dbName' => 'dbNameValues',
+                        'type' => 'typeValue',
+                        'size' => 12345, // <<< INT
+                        'nullable' => true,
+                        'default' => 'defaultValue',
+                    ],
+                ],
+            ],
+        ];
+
+        $config = new Config($config, new ConfigRowDefinition());
+
+        self::assertTrue(is_string($config->getParameters()['db']['port']));
+        self::assertTrue(is_string($config->getParameters()['db']['ssh']['sshPort']));
+        self::assertTrue(is_string($config->getParameters()['items'][0]['size']));
+    }
+
+    public function testStringValues(): void
+    {
+        $config = [
+            'parameters' => [
+                'data_dir' => 'data_dir',
+                'writer_class' => 'writer_class',
+                'db' => [
+                    'host' => 'host',
+                    'port' => '12345', // <<< STRING
+                    'database' => 'database',
+                    'user' => 'user',
+                    '#password' => 'password',
+                    'ssh' => [
+                        'enabled' => true,
+                        'keys' => [
+                            '#private' => 'private',
+                            'public' => 'public',
+                        ],
+                        'sshHost' => 'sshHost',
+                        'sshPort' => '22', // <<< STRING
+                    ],
+                ],
+                'tableId' => 'tableId',
+                'dbName' => 'dbName',
+                'incremental' => true,
+                'export' => false,
+                'primaryKey' => ['pk1', 'pk2'],
+                'items' => [
+                    [
+                        'name' => 'nameValue',
+                        'dbName' => 'dbNameValues',
+                        'type' => 'typeValue',
+                        'size' => '12345', // <<< STRING
+                        'nullable' => true,
+                        'default' => 'defaultValue',
+                    ],
+                ],
+            ],
+        ];
+
+        $config = new Config($config, new ConfigRowDefinition());
+
+        self::assertTrue(is_string($config->getParameters()['db']['port']));
+        self::assertTrue(is_string($config->getParameters()['db']['ssh']['sshPort']));
+        self::assertTrue(is_string($config->getParameters()['items'][0]['size']));
+    }
+
     public function testConfigWithSshTunnelDisabled(): void
     {
         $configurationArray = [
