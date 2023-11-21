@@ -21,6 +21,7 @@ class SshTunnelTest extends TestCase
     {
         parent::setUp();
         $this->closeSshTunnels();
+        sleep(1);
     }
 
     public function testOpenTunnel(): void
