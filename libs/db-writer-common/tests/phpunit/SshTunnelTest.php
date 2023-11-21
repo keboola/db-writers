@@ -21,7 +21,6 @@ class SshTunnelTest extends TestCase
     {
         parent::setUp();
         $this->closeSshTunnels();
-        sleep(1);
     }
 
     public function testOpenTunnel(): void
@@ -83,7 +82,8 @@ class SshTunnelTest extends TestCase
 
     private static function checkIfTunnelIsOpen(): bool
     {
-        $process = new Process(['sh', '-c', 'pgrep ssh | wc -l']);
+        # Find open ssh tunnels
+        $process = new Process(['sh', '-c', 'ps aux | grep -i "ssh -p 22" | grep -v grep | wc -l']);
         $process->mustRun();
 
         $count = (int) $process->getOutput();
