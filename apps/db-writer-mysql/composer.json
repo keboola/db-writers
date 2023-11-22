@@ -11,23 +11,26 @@
         }
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^8.2",
         "ext-PDO": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "keboola/csv": "^1.4",
-        "keboola/db-writer-common": "^5.7",
-        "keboola/php-temp": "^1.0",
-        "keboola/retry": "^0.5.0",
-        "symfony/config": "^4.1",
-        "symfony/filesystem": "^4.3",
-        "symfony/process": "^4.0"
+        "keboola/csv": "dev-ondra-php82-for-v3",
+        "keboola/db-writer-adapter": "dev-ondra-init-adapter",
+        "keboola/db-writer-common": "dev-ondra-refactoring",
+        "keboola/db-writer-config": "dev-ondra-init-config",
+        "keboola/php-component": "^9.4",
+        "keboola/php-temp": "^2.0",
+        "keboola/retry": "^0.5.1",
+        "symfony/config": "^6.3",
+        "symfony/filesystem": "^6.3",
+        "symfony/process": "^5.4"
     },
     "require-dev": {
-        "keboola/coding-standard": "^13.0",
-        "keboola/datadir-tests": "^3.0",
-        "phpstan/phpstan": "^1.5",
-        "phpunit/phpunit": "^7.0"
+        "keboola/coding-standard": "^15.0",
+        "keboola/datadir-tests": "^5.6",
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^9.6"
     },
     "autoload": {
         "psr-4": {
