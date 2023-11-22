@@ -36,14 +36,6 @@ class SshTunnel
             return $config;
         }
 
-        if (!$config->getSshConfig()->getPublicKey() && !$config->getSshConfig()->getPrivateKey()) {
-            throw new DbWriterSshException('SSH public or private key is missing.');
-        }
-
-        if (!$config->getSshConfig()->getSshHost()) {
-            throw new DbWriterSshException('SSH host is missing.');
-        }
-
         $sshConfig = $config->getSshConfig()->toArray();
 
         $sshConfig['remoteHost'] = $config->getHost();
