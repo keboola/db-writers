@@ -79,6 +79,14 @@ class DbNode extends ArrayNodeDefinition implements NodeInterface
 
     protected function addPasswordNode(NodeBuilder $builder): void
     {
+        $this->beforeNormalization()->always(function (array $v) {
+            if (isset($v['password'])) {
+                $v['#password'] = $v['password'];
+                unset($v['password']);
+            }
+            return $v;
+        });
+
         $builder->scalarNode('#password')->isRequired();
     }
 

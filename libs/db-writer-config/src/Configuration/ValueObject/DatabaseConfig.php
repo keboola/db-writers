@@ -16,6 +16,7 @@ readonly class DatabaseConfig
         private ?string $password,
         private ?string $schema,
         private ?SshConfig $sshConfig,
+        private ?SslConfig $sslConfig,
     ) {
     }
 
@@ -28,11 +29,13 @@ readonly class DatabaseConfig
      *     "#password"?: string,
      *     schema?: string,
      *     ssh?: array
+     *     ssl?: array
      * }
      */
     public static function fromArray(array $config): self
     {
         $sshEnabled = $config['ssh']['enabled'] ?? false;
+        $sslEnabled = $config['ssl']['enabled'] ?? false;
 
         return new self(
             $config['host'] ?? null,
@@ -42,6 +45,7 @@ readonly class DatabaseConfig
             $config['#password'] ?? null,
             $config['schema'] ?? null,
             $sshEnabled ? SshConfig::fromArray($config['ssh']) : null,
+            $sslEnabled ? SslConfig::fromArray($config['ssl']) : null,
         );
     }
 
@@ -68,6 +72,11 @@ readonly class DatabaseConfig
     public function hasSshConfig(): bool
     {
         return $this->sshConfig !== null;
+    }
+
+    public function hasSslConfig(): bool
+    {
+        return $this->sslConfig !== null;
     }
 
     /**
@@ -133,6 +142,17 @@ readonly class DatabaseConfig
             throw new PropertyNotSetException('Property "sshConfig" is not set.');
         }
         return $this->sshConfig;
+    }
+
+    /**
+     * @throws PropertyNotSetException
+     */
+    public function getSslConfig(): SslConfig
+    {
+        if ($this->sslConfig === null) {
+            throw new PropertyNotSetException('Property "sslConfig" is not set.');
+        }
+        return $this->sslConfig;
     }
 
     /**
