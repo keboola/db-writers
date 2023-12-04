@@ -25,7 +25,7 @@ readonly class SslConfig
             $config['cert'] ?? null,
             $config['#key'] ?? null,
             $config['cipher'] ?? null,
-            $config['verifyServerCert'] ?? null,
+            $config['verifyServerCert'] ?? true,
             $config['ignoreCertificateCn'] ?? null,
         );
     }
@@ -35,7 +35,7 @@ readonly class SslConfig
         private ?string $cert,
         private ?string $key,
         private ?string $cipher,
-        private ?bool $verifyServerCert,
+        private bool $verifyServerCert,
         private ?bool $ignoreCertificateCn,
     ) {
     }
@@ -104,9 +104,6 @@ readonly class SslConfig
 
     public function getVerifyServerCert(): bool
     {
-        if ($this->verifyServerCert === null) {
-            throw new PropertyNotSetException('SSL verifyServerCert is not set.');
-        }
         return $this->verifyServerCert;
     }
 
