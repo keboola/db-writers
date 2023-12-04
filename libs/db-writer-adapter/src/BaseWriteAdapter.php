@@ -56,9 +56,13 @@ abstract class BaseWriteAdapter implements WriteAdapter
     /**
      * @throws UserException
      */
-    public function writeData(string $tableName, string $csvPath): void
+    public function writeData(string $tableName, ExportConfig $exportConfig): void
     {
-        $query = $this->queryBuilder->writeDataQueryStatement($this->connection, $tableName, $csvPath);
+        $query = $this->queryBuilder->writeDataQueryStatement(
+            $this->connection,
+            $tableName,
+            $exportConfig,
+        );
         try {
             $this->connection->exec($query);
         } catch (PDOException $e) {

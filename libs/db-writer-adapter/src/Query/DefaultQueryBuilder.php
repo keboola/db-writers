@@ -11,6 +11,8 @@ use Keboola\DbWriterConfig\Exception\PropertyNotSetException;
 
 class DefaultQueryBuilder implements QueryBuilder
 {
+    protected string $charset = 'utf8';
+
     public function dropQueryStatement(Connection $connection, string $tableName): string
     {
         return sprintf('DROP TABLE IF EXISTS %s;', $connection->quoteIdentifier($tableName));
@@ -63,7 +65,11 @@ class DefaultQueryBuilder implements QueryBuilder
             );
         }
 
-        $defaultValues = 'DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;';
+        $defaultValues = sprintf(
+            'DEFAULT CHARSET=%s COLLATE=%s_unicode_ci;',
+            $this->charset,
+            $this->charset,
+        );
 
         return sprintf(
             '%s (%s) %s',
@@ -76,7 +82,7 @@ class DefaultQueryBuilder implements QueryBuilder
     public function writeDataQueryStatement(
         Connection $connection,
         string $tableName,
-        string $csvPath,
+        ExportConfig $exportConfig,
     ): string {
         $query = <<<SQL
 LOAD DATA LOCAL INFILE '%s'
@@ -90,7 +96,7 @@ SQL;
 
         return sprintf(
             $query,
-            $csvPath,
+            $exportConfig->getTableFilePath(),
             $connection->quoteIdentifier($tableName),
         );
     }

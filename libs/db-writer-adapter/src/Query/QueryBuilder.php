@@ -23,7 +23,11 @@ interface QueryBuilder
         ?array $primaryKeys = null,
     ): string;
 
-    public function writeDataQueryStatement(Connection $connection, string $tableName, string $csvPath): string;
+    public function writeDataQueryStatement(
+        Connection $connection,
+        string $tableName,
+        ExportConfig $exportConfig,
+    ): string;
 
     public function tableExistsQueryStatement(Connection $connection, string $tableName): string;
 

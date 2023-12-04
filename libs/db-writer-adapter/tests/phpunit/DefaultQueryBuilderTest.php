@@ -129,15 +129,60 @@ class DefaultQueryBuilderTest extends TestCase
 
     public function testWriteDataQuery(): void
     {
-
+        $exportConfig = ExportConfig::fromArray(
+            [
+                'data_dir' => '/path/to/data',
+                'writer_class' => 'Common',
+                'tableId' => 'test',
+                'dbName' => 'test',
+                'db' => [
+                    'database' => 'test',
+                    'user' => 'test',
+                ],
+                'items' => [
+                    [
+                        'name' => 'id',
+                        'dbName' => 'id',
+                        'type' => 'INT',
+                        'size' => null,
+                        'nullable' => false,
+                        'default' => null,
+                    ],
+                    [
+                        'name' => 'name',
+                        'dbName' => 'name',
+                        'type' => 'VARCHAR',
+                        'size' => '255',
+                        'nullable' => false,
+                        'default' => null,
+                    ],
+                    [
+                        'name' => 'age',
+                        'dbName' => 'age',
+                        'type' => 'INT',
+                    ],
+                ],
+            ],
+            [
+                [
+                    'source' => 'test',
+                    'destination' => 'test',
+                    'columns' => [
+                        'id',
+                        'name',
+                        'age',
+                    ],
+                ],
+            ],
+        );
         $query = $this->queryBuilder->writeDataQueryStatement(
             $this->connection,
             'test',
-            '/path/to/csvfile.csv',
+            $exportConfig,
         );
 
         $expectedQuery = <<<SQL
-LOAD DATA LOCAL INFILE '/path/to/csvfile.csv'
+LOAD DATA LOCAL INFILE '/path/to/data/in/tables/test'
 INTO TABLE `test`
 CHARACTER SET utf8
 FIELDS TERMINATED BY ','

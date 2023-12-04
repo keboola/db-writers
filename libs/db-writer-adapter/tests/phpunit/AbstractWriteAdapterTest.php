@@ -146,7 +146,7 @@ abstract class AbstractWriteAdapterTest extends BaseTest
 
         $this->createWriteAdapter()->writeData(
             $config->getDbName(),
-            $config->getTableFilePath(),
+            $config,
         );
 
         Assert::assertTrue($this->logger->hasInfo(sprintf(
@@ -222,7 +222,7 @@ abstract class AbstractWriteAdapterTest extends BaseTest
 
         $this->createWriteAdapter()->writeData(
             $config->getDbName(),
-            $config->getTableFilePath(),
+            $config,
         );
         Assert::assertTrue($this->logger->hasInfo(sprintf(
             'Data written to table "%s".',
@@ -271,7 +271,7 @@ abstract class AbstractWriteAdapterTest extends BaseTest
 
         $this->createWriteAdapter()->writeData(
             $config->getDbName(),
-            $config->getTableFilePath(),
+            $config,
         );
 
         $tmpTableName = $this->createWriteAdapter()->generateTmpName($config->getDbName());
@@ -295,7 +295,7 @@ abstract class AbstractWriteAdapterTest extends BaseTest
         );
         $this->createWriteAdapter()->writeData(
             $tmpTableName,
-            $config->getTableFilePath(),
+            $config,
         );
 
         $this->createWriteAdapter()->upsert(
@@ -341,7 +341,7 @@ abstract class AbstractWriteAdapterTest extends BaseTest
 
         $this->createWriteAdapter()->writeData(
             $config->getDbName(),
-            $config->getTableFilePath(),
+            $config,
         );
 
         $tmpTableName = $this->createWriteAdapter()->generateTmpName($config->getDbName());
@@ -354,7 +354,7 @@ abstract class AbstractWriteAdapterTest extends BaseTest
         $data2 = $this->generateDataFile($config, 5);
         $this->createWriteAdapter()->writeData(
             $config->getDbName(),
-            $config->getTableFilePath(),
+            $config,
         );
 
         $this->createWriteAdapter()->upsert(

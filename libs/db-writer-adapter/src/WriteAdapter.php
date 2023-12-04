@@ -21,7 +21,7 @@ interface WriteAdapter
         ?array $primaryKeys = null,
     ): void;
 
-    public function writeData(string $tableName, string $csvPath): void;
+    public function writeData(string $tableName, ExportConfig $exportConfig): void;
 
     public function upsert(ExportConfig $exportConfig, string $stageTableName): void;
 
