@@ -65,12 +65,22 @@ abstract class BaseWriter
         $stageTableName = $this->adapter->generateTmpName($exportConfig->getDbName());
 
         $this->adapter->drop($stageTableName);
-        $this->adapter->create($stageTableName, true, $exportConfig->getItems());
-        $this->adapter->writeData($stageTableName, $exportConfig->getTableFilePath());
+        $this->adapter->create(
+            $stageTableName,
+            true,
+            $exportConfig->getItems(),
+            $exportConfig->hasPrimaryKey() ? $exportConfig->getPrimaryKey() : null,
+        );
+        $this->adapter->writeData($stageTableName, $exportConfig);
 
         // create destination table if not exists
         if (!$this->adapter->tableExists($exportConfig->getDbName())) {
-            $this->adapter->create($exportConfig->getDbName(), false, $exportConfig->getItems());
+            $this->adapter->create(
+                $exportConfig->getDbName(),
+                false,
+                $exportConfig->getItems(),
+                $exportConfig->hasPrimaryKey() ? $exportConfig->getPrimaryKey() : null,
+            );
         }
         $this->adapter->validateTable($exportConfig->getDbName(), $exportConfig->getItems());
 
@@ -81,8 +91,13 @@ abstract class BaseWriter
     protected function writeFull(ExportConfig $exportConfig): void
     {
         $this->adapter->drop($exportConfig->getDbName());
-        $this->adapter->create($exportConfig->getDbName(), false, $exportConfig->getItems());
-        $this->adapter->writeData($exportConfig->getDbName(), $exportConfig->getTableFilePath());
+        $this->adapter->create(
+            $exportConfig->getDbName(),
+            false,
+            $exportConfig->getItems(),
+            $exportConfig->hasPrimaryKey() ? $exportConfig->getPrimaryKey() : null,
+        );
+        $this->adapter->writeData($exportConfig->getDbName(), $exportConfig);
     }
 
     /**

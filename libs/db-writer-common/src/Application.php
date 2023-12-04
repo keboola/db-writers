@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\DbWriter;
 
 use Keboola\Component\BaseComponent;
+use Keboola\Component\Config\BaseConfig;
 use Keboola\DbWriter\Exception\ApplicationException;
 use Keboola\DbWriter\Exception\InvalidDatabaseHostException;
 use Keboola\DbWriter\Exception\UserException;
@@ -14,10 +15,14 @@ use Keboola\DbWriterConfig\Configuration\ConfigRowDefinition;
 use Keboola\DbWriterConfig\Configuration\ValueObject\DatabaseConfig;
 use Keboola\DbWriterConfig\Configuration\ValueObject\ExportConfig;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Throwable;
 
 class Application extends BaseComponent
 {
+
+    protected string $writerName = 'Common';
+
     /**
      * @throws InvalidDatabaseHostException
      */
@@ -25,6 +30,14 @@ class Application extends BaseComponent
     {
         parent::__construct($logger);
         $this->checkDatabaseHost();
+    }
+
+    protected function getRawConfig(): array
+    {
+        $rawConfig = parent::getRawConfig();
+        $rawConfig['parameters']['writer_class'] = $this->writerName;
+        $rawConfig['parameters']['data_dir'] = $this->getDataDir();
+        return $rawConfig;
     }
 
     /**
