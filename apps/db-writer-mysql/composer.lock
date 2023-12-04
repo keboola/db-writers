@@ -105,12 +105,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keboola/db-writer-adapter.git",
-                "reference": "628fa01eeafe27bd17517c382ad7c35b8efcb8ca"
+                "reference": "5f622a84b92628a8394b53232fe245dacd8b0a75"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keboola/db-writer-adapter/zipball/628fa01eeafe27bd17517c382ad7c35b8efcb8ca",
-                "reference": "628fa01eeafe27bd17517c382ad7c35b8efcb8ca",
+                "url": "https://api.github.com/repos/keboola/db-writer-adapter/zipball/5f622a84b92628a8394b53232fe245dacd8b0a75",
+                "reference": "5f622a84b92628a8394b53232fe245dacd8b0a75",
                 "shasum": ""
             },
             "require": {
@@ -147,7 +147,7 @@
             "support": {
                 "source": "https://github.com/keboola/db-writer-adapter/tree/ondra-init-adapter"
             },
-            "time": "2023-11-15T22:44:51+00:00"
+            "time": "2023-12-04T21:29:54+00:00"
         },
         {
             "name": "keboola/db-writer-common",
@@ -155,12 +155,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keboola/db-writer-common.git",
-                "reference": "961856e48c67cf1f814736fb03c429ff1cb41070"
+                "reference": "4d5725119e78bc62ca0dceb1e4773266156bf09f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keboola/db-writer-common/zipball/961856e48c67cf1f814736fb03c429ff1cb41070",
-                "reference": "961856e48c67cf1f814736fb03c429ff1cb41070",
+                "url": "https://api.github.com/repos/keboola/db-writer-common/zipball/4d5725119e78bc62ca0dceb1e4773266156bf09f",
+                "reference": "4d5725119e78bc62ca0dceb1e4773266156bf09f",
                 "shasum": ""
             },
             "require": {
@@ -208,7 +208,7 @@
                 "issues": "https://github.com/keboola/db-writer-common/issues",
                 "source": "https://github.com/keboola/db-writer-common/tree/ondra-refactoring"
             },
-            "time": "2023-11-22T20:50:33+00:00"
+            "time": "2023-12-04T21:24:11+00:00"
         },
         {
             "name": "keboola/db-writer-config",
@@ -216,12 +216,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keboola/db-writer-config.git",
-                "reference": "381a108a64e06c019441ca7050bc5d78812df011"
+                "reference": "6fb527fa17a68123be8d4c8caeaa7ce7f526607c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keboola/db-writer-config/zipball/381a108a64e06c019441ca7050bc5d78812df011",
-                "reference": "381a108a64e06c019441ca7050bc5d78812df011",
+                "url": "https://api.github.com/repos/keboola/db-writer-config/zipball/6fb527fa17a68123be8d4c8caeaa7ce7f526607c",
+                "reference": "6fb527fa17a68123be8d4c8caeaa7ce7f526607c",
                 "shasum": ""
             },
             "require": {
@@ -260,7 +260,7 @@
                 "issues": "https://github.com/keboola/db-writer-config/issues",
                 "source": "https://github.com/keboola/db-writer-config/tree/ondra-init-config"
             },
-            "time": "2023-11-21T22:17:47+00:00"
+            "time": "2023-12-04T21:28:58+00:00"
         },
         {
             "name": "keboola/php-component",

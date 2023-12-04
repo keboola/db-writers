@@ -21,12 +21,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         openssl \
         unzip \
         locales \
+        libicu-dev \
         unzip \
 	&& rm -r /var/lib/apt/lists/* \
 	&& sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen \
 	&& locale-gen \
 	&& chmod +x /tmp/composer-install.sh \
 	&& /tmp/composer-install.sh
+
+RUN docker-php-ext-configure intl \
+    && docker-php-ext-install intl
 
 # PHP
 RUN docker-php-ext-install pdo pdo_mysql
