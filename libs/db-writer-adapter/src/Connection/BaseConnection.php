@@ -87,7 +87,7 @@ abstract class BaseConnection implements Connection
     /**
      * @return array<int, array<string, mixed>>
      */
-    public function fetchAll(string $query, int $maxRetries): array
+    public function fetchAll(string $query, int $maxRetries = self::DEFAULT_MAX_RETRIES): array
     {
         return $this->callWithRetry(
             $maxRetries,
