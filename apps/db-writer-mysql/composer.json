@@ -40,6 +40,7 @@
     "autoload-dev": {
         "psr-4": {
             "Keboola\\DbWriter\\FunctionalTests\\": "tests/functional/",
+            "Keboola\\DbWriter\\TraitTests\\": "tests/traits/",
             "Keboola\\DbWriter\\Tests\\": "tests/phpunit/"
         }
     },

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Keboola\CommonExceptions\UserExceptionInterface;
 use Keboola\Component\Logger;
-use Keboola\Component\UserException;
 use Keboola\DbWriter\MySQLApplication;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -12,7 +12,7 @@ $logger = new Logger();
 try {
     $app = new MySQLApplication($logger);
     $app->execute();
-} catch (UserException $e) {
+} catch (UserExceptionInterface $e) {
     $logger->error($e->getMessage());
     exit(1);
 } catch (Throwable $e) {

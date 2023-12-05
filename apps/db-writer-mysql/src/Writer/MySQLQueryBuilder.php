@@ -136,7 +136,7 @@ SQL;
         return array_map(function ($column) use ($items, $connection) {
             // skip ignored
             foreach ($items as $item) {
-                if ($item->getName() === $column && $item->getType() === 'IGNORE') {
+                if ($item->getName() === $column && strtolower($item->getType()) === 'ignore') {
                     return '@dummy';
                 }
             }

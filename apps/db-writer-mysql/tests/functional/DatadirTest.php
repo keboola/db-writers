@@ -10,15 +10,17 @@ use Keboola\Csv\InvalidArgumentException;
 use Keboola\DatadirTests\AbstractDatadirTestCase;
 use Keboola\DatadirTests\DatadirTestSpecificationInterface;
 use Keboola\DatadirTests\DatadirTestsProviderInterface;
+use Keboola\DbWriter\TraitTests\CloseSshTunnelsTrait;
 use Keboola\DbWriter\Writer\MySQLConnection;
 use Keboola\DbWriter\Writer\MySQLConnectionFactory;
 use Keboola\DbWriterConfig\Configuration\ValueObject\DatabaseConfig;
-use PDO;
 use Psr\Log\Test\TestLogger;
 use Symfony\Component\Filesystem\Filesystem;
 
 class DatadirTest extends AbstractDatadirTestCase
 {
+    use CloseSshTunnelsTrait;
+
     private MySQLConnection $connection;
 
     /** @var string $dataDir */
@@ -42,6 +44,7 @@ class DatadirTest extends AbstractDatadirTestCase
     {
         parent::setUp();
         $this->connection = MySQLConnectionFactory::create($this->getDatabaseConfig(), new TestLogger());
+        $this->closeSshTunnels();
         $this->dropTables();
     }
 
