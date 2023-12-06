@@ -76,10 +76,11 @@ abstract class BaseConnection implements Connection
 
     public function exec(string $query, int $maxRetries = self::DEFAULT_MAX_RETRIES): void
     {
+        $this->logger->debug(sprintf('Running query "%s".', $query));
         $this->callWithRetry(
             $maxRetries,
             function () use ($query): void {
-                $this->queryReconnectOnError(Connection::QUERY_TYPE_EXEC, $query);
+                $this->doQuery(Connection::QUERY_TYPE_EXEC, $query);
             },
         );
     }
@@ -89,30 +90,13 @@ abstract class BaseConnection implements Connection
      */
     public function fetchAll(string $query, int $maxRetries = self::DEFAULT_MAX_RETRIES): array
     {
+        $this->logger->debug(sprintf('Running query "%s".', $query));
         return $this->callWithRetry(
             $maxRetries,
             function () use ($query): array {
-                return $this->queryReconnectOnError(Connection::QUERY_TYPE_FETCH_ALL, $query) ?? [];
+                return $this->doQuery(Connection::QUERY_TYPE_FETCH_ALL, $query) ?? [];
             },
         ) ?? [];
-    }
-
-    /**
-     * @return null|array<int, array<string, mixed>>
-     */
-    protected function queryReconnectOnError(string $queryType, string $query): ?array
-    {
-        $this->logger->debug(sprintf('Running query "%s".', $query));
-        try {
-            return $this->doQuery($queryType, $query);
-        } catch (Throwable $e) {
-            try {
-                // Reconnect
-                $this->connect();
-            } catch (Throwable $e) {
-            };
-            throw $e;
-        }
     }
 
     protected function connectWithRetry(): void

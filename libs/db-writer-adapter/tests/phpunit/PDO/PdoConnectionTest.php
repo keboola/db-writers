@@ -149,7 +149,7 @@ class PdoConnectionTest extends BaseTest
         $connection = $this->createPdoConnection();
         Assert::assertSame(
             [['X' => 123, 'Y' => 456]],
-            $connection->fetchAll('SELECT 123 as X, 456 as Y', PdoConnection::DEFAULT_MAX_RETRIES),
+            $connection->fetchAll('SELECT 123 as X, 456 as Y'),
         );
         Assert::assertTrue($this->logger->hasDebug('Running query "SELECT 123 as X, 456 as Y".'));
     }
