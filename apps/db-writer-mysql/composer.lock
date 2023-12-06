@@ -105,12 +105,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keboola/db-writer-adapter.git",
-                "reference": "5f622a84b92628a8394b53232fe245dacd8b0a75"
+                "reference": "bdeec5af178784389963b07a968004f899ad1087"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keboola/db-writer-adapter/zipball/5f622a84b92628a8394b53232fe245dacd8b0a75",
-                "reference": "5f622a84b92628a8394b53232fe245dacd8b0a75",
+                "url": "https://api.github.com/repos/keboola/db-writer-adapter/zipball/bdeec5af178784389963b07a968004f899ad1087",
+                "reference": "bdeec5af178784389963b07a968004f899ad1087",
                 "shasum": ""
             },
             "require": {
@@ -147,7 +147,7 @@
             "support": {
                 "source": "https://github.com/keboola/db-writer-adapter/tree/ondra-init-adapter"
             },
-            "time": "2023-12-04T21:29:54+00:00"
+            "time": "2023-12-06T21:59:25+00:00"
         },
         {
             "name": "keboola/db-writer-common",

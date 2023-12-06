@@ -15,13 +15,14 @@ use Keboola\DbWriter\Writer\MySQLConnection;
 use Keboola\DbWriter\Writer\MySQLConnectionFactory;
 use Keboola\DbWriterConfig\Configuration\ValueObject\DatabaseConfig;
 use Psr\Log\Test\TestLogger;
+use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 
 class DatadirTest extends AbstractDatadirTestCase
 {
     use CloseSshTunnelsTrait;
 
-    private MySQLConnection $connection;
+    public MySQLConnection $connection;
 
     /** @var string $dataDir */
     private $dataDir;
@@ -46,6 +47,21 @@ class DatadirTest extends AbstractDatadirTestCase
         $this->connection = MySQLConnectionFactory::create($this->getDatabaseConfig(), new TestLogger());
         $this->closeSshTunnels();
         $this->dropTables();
+
+        $this->testProjectDir = $this->getTestFileDir() . '/' . $this->dataName();
+
+        // Load setUp.php file - used to init database state
+        $setUpPhpFile = $this->testProjectDir . '/setUp.php';
+        if (file_exists($setUpPhpFile)) {
+            // Get callback from file and check it
+            $initCallback = require $setUpPhpFile;
+            if (!is_callable($initCallback)) {
+                throw new RuntimeException(sprintf('File "%s" must return callback!', $setUpPhpFile));
+            }
+
+            // Invoke callback
+            $initCallback($this);
+        }
     }
 
     /**
@@ -54,8 +70,6 @@ class DatadirTest extends AbstractDatadirTestCase
     public function testDatadir(DatadirTestSpecificationInterface $specification): void
     {
         $tempDatadir = $this->getTempDatadir($specification);
-
-        $this->dropTables();
 
         $process = $this->runScript($tempDatadir->getTmpFolder());
 
