@@ -10,6 +10,7 @@ use Keboola\DbWriterConfig\Configuration\ValueObject\DatabaseConfig;
 use Keboola\DbWriterConfig\Exception\PropertyNotSetException;
 use Keboola\Temp\Temp;
 use PDO;
+use PDOException;
 use Psr\Log\LoggerInterface;
 
 class MySQLConnectionFactory
@@ -70,7 +71,7 @@ class MySQLConnectionFactory
             $databaseConfig->getDatabase(),
         );
 
-        return new MySQLConnection(
+        $connection = new MySQLConnection(
             $logger,
             $dsn,
             $databaseConfig->getUser(),
@@ -115,6 +116,16 @@ class MySQLConnectionFactory
                 $connection->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
             },
         );
+
+        try {
+            $connection->exec(sprintf('SET NAMES %s;', $connection->getCharset()));
+        } catch (PDOException) {
+            $logger->info('Falling back to ' . $connection->getCharset() . ' charset');
+            $connection->setCharset('utf8');
+            $connection->exec(sprintf('SET NAMES %s;', $connection->getCharset()));
+        }
+
+        return $connection;
     }
 
     /**

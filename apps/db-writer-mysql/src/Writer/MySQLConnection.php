@@ -12,6 +12,19 @@ use Throwable;
 
 class MySQLConnection extends PdoConnection
 {
+
+    private string $charset = 'utf8mb4';
+
+    public function getCharset(): string
+    {
+        return $this->charset;
+    }
+
+    public function setCharset(string $charset): void
+    {
+        $this->charset = $charset;
+    }
+
     protected function connect(): void
     {
         try {
