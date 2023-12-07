@@ -24,8 +24,7 @@ class DatadirTest extends AbstractDatadirTestCase
 
     public MySQLConnection $connection;
 
-    /** @var string $dataDir */
-    private $dataDir;
+    protected string $testProjectDir;
 
     public function __construct(
         ?string $name = null,
@@ -90,6 +89,10 @@ class DatadirTest extends AbstractDatadirTestCase
 
     private function getMysqlVersion(): int
     {
+        /** @var array{array{
+         *     version: string
+         * }} $version
+         */
         $version = $this->connection->fetchAll('SELECT VERSION() as version;', 3);
         return (int) $version[0]['version'];
     }
