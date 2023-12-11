@@ -15,7 +15,7 @@
         "ext-PDO": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "keboola/csv": "dev-ondra-php82-for-v3",
+        "keboola/csv": "^3.3",
         "keboola/db-writer-adapter": "dev-ondra-init-adapter",
         "keboola/db-writer-common": "dev-ondra-refactoring",
         "keboola/db-writer-config": "dev-ondra-init-config",
@@ -45,11 +45,13 @@
         }
     },
     "scripts": {
-        "tests-phpunit": "phpunit",
-        "tests-datadir": "phpunit tests/functional",
+        "tests-phpunit": "phpunit --testsuite unit",
+        "tests-datadir": "phpunit --testsuite functional",
+        "tests-perf": "phpunit --testsuite perf",
         "tests": [
             "@tests-phpunit",
-            "@tests-datadir"
+            "@tests-datadir",
+            "@tests-perf"
         ],
         "phpcs": "phpcs -n --ignore=vendor --extensions=php .",
         "phpcbf": "phpcbf -n --ignore=vendor --extensions=php .",

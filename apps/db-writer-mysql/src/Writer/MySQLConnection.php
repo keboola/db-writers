@@ -54,7 +54,7 @@ class MySQLConnection extends PdoConnection
         }
     }
 
-    public function handleException(Throwable $e): void
+    protected function handleException(Throwable $e): void
     {
         $checkCnMismatch = function (Throwable $exception): void {
             if (str_contains($exception->getMessage(), 'did not match expected CN')) {

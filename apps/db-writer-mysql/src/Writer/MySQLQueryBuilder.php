@@ -54,7 +54,7 @@ SQL;
     /**
      * @param ItemConfig[] $items
      */
-    protected function getExpressionReplace(Connection $connection, array $items): string
+    private function getExpressionReplace(Connection $connection, array $items): string
     {
         $expressions = array_merge(
             $this->emptyToNullOrDefault($connection, $items),

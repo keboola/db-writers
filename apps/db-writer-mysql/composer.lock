@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9c440ca2a67e751b7b4dc85f6fc3c306",
+    "content-hash": "ddb1c9cf3041f3b785a82789ed09ca3a",
     "packages": [
         {
             "name": "keboola/common-exceptions",
@@ -48,16 +48,16 @@
         },
         {
             "name": "keboola/csv",
-            "version": "dev-ondra-php82-for-v3",
+            "version": "3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/keboola/php-csv.git",
-                "reference": "7079eb7f31dee646924b7744f47a34eb72ca5783"
+                "reference": "4d7785e982b31f3768ac71d559aeebdc1722b03c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keboola/php-csv/zipball/7079eb7f31dee646924b7744f47a34eb72ca5783",
-                "reference": "7079eb7f31dee646924b7744f47a34eb72ca5783",
+                "url": "https://api.github.com/repos/keboola/php-csv/zipball/4d7785e982b31f3768ac71d559aeebdc1722b03c",
+                "reference": "4d7785e982b31f3768ac71d559aeebdc1722b03c",
                 "shasum": ""
             },
             "require": {
@@ -95,9 +95,9 @@
             ],
             "support": {
                 "issues": "https://github.com/keboola/php-csv/issues",
-                "source": "https://github.com/keboola/php-csv/tree/ondra-php82-for-v3"
+                "source": "https://github.com/keboola/php-csv/tree/3.3.0"
             },
-            "time": "2023-11-22T22:28:46+00:00"
+            "time": "2023-12-08T09:16:32+00:00"
         },
         {
             "name": "keboola/db-writer-adapter",
@@ -3420,7 +3420,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "keboola/csv": 20,
         "keboola/db-writer-adapter": 20,
         "keboola/db-writer-common": 20,
         "keboola/db-writer-config": 20
