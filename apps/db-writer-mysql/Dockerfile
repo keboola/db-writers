@@ -16,10 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         wget \
         curl \
         bzip2 \
-        time \
         libzip-dev \
         openssl \
-        unzip \
         locales \
         libicu-dev \
         unzip \
