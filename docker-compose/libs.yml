@@ -1,0 +1,36 @@
+version: "3.4"
+
+services:
+  dev-db-writer-adapter:
+    build:
+      context: ..
+      target: lib-db-writer-adapter
+      args:
+        - PHP_VERSION=8.2
+    environment:
+      DB_USER: root
+      DB_PASSWORD: somePassword
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_DATABASE: testdb
+    depends_on:
+      - mariadb
+      - toxiproxy
+    volumes:
+      - ../libs/db-writer-adapter:/code
+      - ../libs/db-writer-adapter/data:/data
+
+  dev-db-writer-config:
+    build:
+      context: ..
+      target: lib-db-writer-config
+      args:
+        - PHP_VERSION=8.2
+    volumes:
+      - ../libs/db-writer-config:/code
+      - ../libs/db-writer-config/data:/data
+
+  toxiproxy:
+    image: shopify/toxiproxy
+    depends_on:
+      - mariadb

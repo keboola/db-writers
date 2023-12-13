@@ -1,0 +1,8 @@
+services:
+  mariadb:
+    image: mariadb:11.1
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_DATABASE: testdb
+      MARIADB_ROOT_PASSWORD: somePassword
