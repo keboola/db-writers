@@ -1,0 +1,16 @@
+name: Build on push
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+      - name: Build and run tests
+        run: |
+          docker-compose build
+          docker-compose run --rm wait
+          docker-compose run --rm tests composer ci
