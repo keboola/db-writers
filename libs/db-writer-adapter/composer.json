@@ -1,0 +1,62 @@
+{
+    "name": "keboola/db-writer-adapter",
+    "description": "MyComponent description",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "ext-mbstring": "*",
+        "keboola/db-writer-config": "dev-ondra-init-config",
+        "keboola/php-component": "^9.0",
+        "keboola/retry": "^0.5.1",
+        "psr/log": "^1.1"
+    },
+    "require-dev": {
+        "ihsw/toxiproxy-php-client": "^2.0",
+        "keboola/coding-standard": ">=7.0.2",
+        "keboola/csv": "^4.0",
+        "keboola/datadir-tests": "^5.3",
+        "keboola/php-temp": "^2.0",
+        "php-parallel-lint/php-parallel-lint": "^1.3",
+        "phpstan/phpstan": "^1.4",
+        "phpunit/phpunit": "^9.5",
+        "symfony/filesystem": "^6.3",
+        "symfony/process": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Keboola\\DbWriterAdapter\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Keboola\\DbWriterAdapter\\Tests\\": "tests/phpunit/"
+        }
+    },
+    "scripts": {
+        "tests-phpunit": "phpunit",
+        "tests": [
+            "@tests-phpunit"
+        ],
+        "phpstan": "phpstan analyse ./src ./tests --level=max --no-progress -c phpstan.neon",
+        "phpcs": "phpcs -n --ignore=vendor --extensions=php .",
+        "phpcbf": "phpcbf -n --ignore=vendor --extensions=php .",
+        "phplint": "parallel-lint -j 10 --exclude vendor .",
+        "build": [
+            "@phplint",
+            "@phpcs",
+            "@phpstan",
+            "@tests"
+        ],
+        "ci": [
+            "@composer validate --no-check-publish --no-check-all",
+            "@build"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}
