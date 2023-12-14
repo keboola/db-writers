@@ -1,4 +1,8 @@
 include:
   - path:
       - docker-compose/libs.yml
+      - docker-compose/services.yml
       - docker-compose/databases.yml
+
+volumes:
+  ssh-keys:

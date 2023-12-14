@@ -30,7 +30,21 @@ services:
       - ../libs/db-writer-config:/code
       - ../libs/db-writer-config/data:/data
 
-  toxiproxy:
-    image: shopify/toxiproxy
+  dev-db-writer-common:
+    build:
+      context: ..
+      target: lib-db-writer-common
+      args:
+        - PHP_VERSION=8.2
+    volumes:
+      - ssh-keys:/root/.ssh:ro
+      - ../libs/db-writer-common:/code
+    environment:
+      COMMON_DB_USER: root
+      COMMON_DB_PASSWORD: somePassword
+      COMMON_DB_HOST: mysql
+      COMMON_DB_PORT: 3306
+      COMMON_DB_DATABASE: testdb
     depends_on:
-      - mariadb
+      - sshproxy
+      - mysql

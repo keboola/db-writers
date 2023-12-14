@@ -20,6 +20,13 @@
     "keboola/retry": "^0.5.1",
     "keboola/ssh-tunnel": "^2.0"
   },
+  "require-dev": {
+    "keboola/coding-standard": "^15.0",
+    "keboola/csv": "^4.0",
+    "keboola/datadir-tests": "^5.6",
+    "phpstan/phpstan": "^1.10",
+    "phpunit/phpunit": "^9.6"
+  },
   "autoload": {
     "psr-4": {
       "Keboola\\DbWriter\\": "src/"
@@ -58,12 +65,5 @@
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer":  true
     }
-  },
-  "require-dev": {
-    "keboola/coding-standard": "^15.0",
-    "keboola/csv": "^4.0",
-    "keboola/datadir-tests": "dev-ondra-update-packages",
-    "phpstan/phpstan": "^1.10",
-    "phpunit/phpunit": "^9.6"
   }
 }

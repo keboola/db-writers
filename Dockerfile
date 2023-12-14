@@ -153,3 +153,4 @@ COPY libs/${APP_NAME}/. /code/
 
 # Run normal composer - all deps are cached already
 RUN composer install $COMPOSER_FLAGS
+
