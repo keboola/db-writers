@@ -25,4 +25,6 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: Print Outputs
-          run: echo "${{needs.check-changes.outputs.changedProjects_dbWriterConfig}}"
+          run: |
+            echo "${{ needs.check-changes.outputs.changedProjects_dbWriterConfig }}"
+            echo "${{ env.changedProjects_dbWriterConfig }}
