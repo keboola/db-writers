@@ -74,7 +74,7 @@ for PROJECT in ${@:2}; do
   fi
 
   if [[ $HAS_CHANGES -eq 1 ]]; then
-    echo "echo \"changedProjects_${PROJECT_VAR_NAME}=1\" >> \$GITHUB_OUTPUT"
+    echo "echo \"changedProjects_${PROJECT_VAR_NAME}=1\""
     ALL_CHANGES="${ALL_CHANGES} \"${PROJECT_VAR_NAME}\""
   fi
 done
@@ -85,7 +85,7 @@ if [[ "${ALL_CHANGES}" == "" ]]; then
     PROJECT_CONFIG=(${PROJECT//:/ })
     PROJECT_VAR_NAME=${PROJECT_CONFIG[0]}
 
-    echo "echo \"changedProjects_${PROJECT_VAR_NAME}=1\" >> $GITHUB_OUTPUT"
+    echo "echo \"changedProjects_${PROJECT_VAR_NAME}=1\""
     ALL_CHANGES="${ALL_CHANGES} \"${PROJECT_VAR_NAME}\""
   done
 fi
