@@ -27,4 +27,4 @@ jobs:
         - name: Print Outputs
           run: |
             echo "${{ needs.check-changes.outputs.changedProjects_dbWriterConfig }}"
-            echo "${{ env.changedProjects_dbWriterConfig }}
+            echo "${{ env.changedProjects_dbWriterConfig }}"
