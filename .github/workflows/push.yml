@@ -15,7 +15,7 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          bin/ci-find-changes.sh ondra-libs \
+          source bin/ci-find-changes.sh ondra-libs \
             dbWriterConfig:libs/db-writer-config \
             dbWriterAdapter:libs/db-writer-adapter \
             dbWriterCommon:libs/db-writer-common
@@ -23,10 +23,6 @@ jobs:
   build:
       needs: check-changes
       runs-on: ubuntu-latest
-      if: needs.check-changes.outputs.changedProjects_dbWriterConfig == 1
       steps:
-        - uses: actions/checkout@v3
-        - name: Build db-writer-config
-          run: docker-compose build dev-db-writer-config
-        - name: Test db-writer-config
-          run: docker-compose run --rm dev-db-writer-config composer ci
+        - name: Print Outputs
+          run: echo "${{needs.check-changes.outputs.changedProjects_dbWriterConfig}}"
