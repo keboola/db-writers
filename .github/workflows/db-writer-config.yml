@@ -10,10 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Docker version
-        run: docker -v
-      - name: Docker-compose version
-        run: docker-compose -v
       - name: Build
         run: |
             docker build --target lib-db-writer-config -t $APP_IMAGE .
@@ -28,6 +24,10 @@ jobs:
         with:
           version: latest
           legacy: true
+      - name: Docker version
+        run: docker -v
+      - name: Docker-compose version
+        run: docker-compose -v
       - name: Test
         run: |
           docker-compose run --rm dev-db-writer-config composer ci
