@@ -18,7 +18,7 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          echo bin/ci-find-changes.sh ${{ env.BRANCH_NAME }} \
+          bin/ci-find-changes.sh ${{ env.BRANCH_NAME }} \
             dbWriterConfig:libs/db-writer-config \
             dbWriterAdapter:libs/db-writer-adapter \
             dbWriterCommon:libs/db-writer-common
