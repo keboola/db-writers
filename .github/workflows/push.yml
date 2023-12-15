@@ -14,7 +14,7 @@ jobs:
       changedProjects_dbWriterCommon: ${{ steps.check_changes.outputs.changedProjects_dbWriterCommon }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check for changes
         id: check_changes
         run: |
