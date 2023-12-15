@@ -11,5 +11,7 @@ include:
     path: docker-compose/databases.yml
     project_directory: .
 
+services: {}
+
 volumes:
   ssh-keys:
