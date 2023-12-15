@@ -1,7 +1,15 @@
+version: '3.8'
+
 include:
-  - path: docker-compose/libs.yml
-  - path: docker-compose/services.yml
-  - path: docker-compose/databases.yml
+  -
+    path: libs.yml
+    project_directory: docker-compose
+  -
+    path: services.yml
+    project_directory: docker-compose
+  -
+    path: docker-compose/databases.yml
+    project_directory: .
 
 volumes:
   ssh-keys:
