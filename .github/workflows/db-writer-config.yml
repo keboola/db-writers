@@ -23,6 +23,11 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v4
+      - name: Install Compose
+        uses: ndeloof/install-compose-action@v0.0.1
+        with:
+          version: latest
+          legacy: true
       - name: Test
         run: |
           docker-compose run --rm dev-db-writer-config composer ci
