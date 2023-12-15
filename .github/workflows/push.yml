@@ -26,5 +26,4 @@ jobs:
   db-writer-config:
       needs: check-changes
       if: ${{ needs.check-changes.outputs.changedProjects_dbWriterConfig == '1' }}
-      uses: ./.github/actions/db-writer-config.yml
-
+      uses: ./.github/workflows/db-writer-config.yml
