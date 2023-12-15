@@ -21,6 +21,7 @@ services:
       - ../libs/db-writer-adapter/data:/data
 
   dev-db-writer-config:
+    image: keboola/db-writer-config
     build:
       context: ..
       target: lib-db-writer-config

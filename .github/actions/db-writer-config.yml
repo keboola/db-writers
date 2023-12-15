@@ -1,0 +1,24 @@
+name: Build and Test DB Writer Config
+on:
+  workflow_call:
+
+env:
+  APP_IMAGE: keboola/db-writer-config
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+            docker build --target lib-db-writer-config -t $APP_IMAGE .
+        
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test
+        run: |
+          docker-compose run --rm dev-db-writer-config composer ci

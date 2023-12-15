@@ -23,29 +23,8 @@ jobs:
             dbWriterAdapter:libs/db-writer-adapter \
             dbWriterCommon:libs/db-writer-common
 
-  build-db-writer-config:
+  db-writer-config:
       needs: check-changes
-      runs-on: ubuntu-latest
       if: ${{ needs.check-changes.outputs.changedProjects_dbWriterConfig == '1' }}
-      steps:
-        - name: Print Outputs
-          run: |
-            echo "${{ needs.check-changes.outputs.changedProjects_dbWriterConfig }}"
+      uses: ./.github/actions/db-writer-config.yml
 
-  build-db-writer-adapter:
-      needs: check-changes
-      runs-on: ubuntu-latest
-      if: ${{ needs.check-changes.outputs.changedProjects_dbWriterAdapter == '1' }}
-      steps:
-        - name: Print Outputs
-          run: |
-            echo "${{ needs.check-changes.outputs.changedProjects_dbWriterAdapter }}"
-
-  build-db-writer-common:
-      needs: check-changes
-      runs-on: ubuntu-latest
-      if: ${{ needs.check-changes.outputs.changedProjects_dbWriterCommon == '1' }}
-      steps:
-        - name: Print Outputs
-          run: |
-            echo "${{ needs.check-changes.outputs.changedProjects_dbWriterCommon }}"
