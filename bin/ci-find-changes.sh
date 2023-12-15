@@ -51,14 +51,17 @@ for PROJECT in ${@:2}; do
   PROJECT_VAR_NAME=${PROJECT_CONFIG[0]}
   PROJECT_DIR=${PROJECT_CONFIG[1]}
 
+  echo -n "Checking ${PROJECT_DIR} ... "
   DIR_EXISTS_IN_TARGET_BRANCH=$(git ls-tree -d "origin/${TARGET_BRANCH}:${PROJECT_DIR}" >/dev/null 2>&1 && echo 1 || echo 0)
   if [[ $DIR_EXISTS_IN_TARGET_BRANCH -eq 0 ]]; then
     HAS_CHANGES=1
+    echo "does not exists in ${TARGET_BRANCH}"
   else
     PROJECT_CHANGES=$(git diff --name-only "origin/${TARGET_BRANCH}" "${PROJECT_DIR}")
 
     if [[ $(echo -n "${PROJECT_CHANGES}" | xargs | nl -bt - | wc -l) -gt 0 ]]; then
       HAS_CHANGES=1
+      echo "has changes"
 
       if [ "${VERBOSE}" = true ]; then
         echo "${PROJECT_CHANGES}"
@@ -66,21 +69,23 @@ for PROJECT in ${@:2}; do
       fi
     else
       HAS_CHANGES=0
+      echo "no changes"
     fi
   fi
 
   if [[ $HAS_CHANGES -eq 1 ]]; then
-    echo "echo \"changedProjects_${PROJECT_VAR_NAME}=1\" >> \$GITHUB_OUTPUT"
+    echo changedProjects_${PROJECT_VAR_NAME}=1 | tee -a "$GITHUB_OUTPUT"
     ALL_CHANGES="${ALL_CHANGES} \"${PROJECT_VAR_NAME}\""
   fi
 done
 
 if [[ "${ALL_CHANGES}" == "" ]]; then
+  echo ">> No changes detected, triggering all projects builds"
   for PROJECT in $@; do
     PROJECT_CONFIG=(${PROJECT//:/ })
     PROJECT_VAR_NAME=${PROJECT_CONFIG[0]}
 
-    echo "echo \"changedProjects_${PROJECT_VAR_NAME}=1\" >> \$GITHUB_OUTPUT"
+    echo changedProjects_${PROJECT_VAR_NAME}=1 | tee -a "$GITHUB_OUTPUT"
     ALL_CHANGES="${ALL_CHANGES} \"${PROJECT_VAR_NAME}\""
   done
 fi

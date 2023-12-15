@@ -2,6 +2,9 @@ name: GitHub Actions CI
 on: [ push ]
 concurrency: ci-${{ github.ref }} # to avoid tag collisions in the ECR
 
+env:
+  BRANCH_NAME: ${{ startsWith(github.event_name, 'pull_request') && github.head_ref || github.ref_name }}
+
 jobs:
   check-changes:
     runs-on: ubuntu-latest
@@ -15,16 +18,34 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          source bin/ci-find-changes.sh ondra-libs \
+          echo bin/ci-find-changes.sh ${{ env.BRANCH_NAME }} \
             dbWriterConfig:libs/db-writer-config \
             dbWriterAdapter:libs/db-writer-adapter \
             dbWriterCommon:libs/db-writer-common
 
-  build:
+  build-db-writer-config:
       needs: check-changes
       runs-on: ubuntu-latest
+      if: ${{ needs.check-changes.outputs.changedProjects_dbWriterConfig == '1' }}
       steps:
         - name: Print Outputs
           run: |
             echo "${{ needs.check-changes.outputs.changedProjects_dbWriterConfig }}"
-            echo "${{ env.changedProjects_dbWriterConfig }}"
+
+  build-db-writer-adapter:
+      needs: check-changes
+      runs-on: ubuntu-latest
+      if: ${{ needs.check-changes.outputs.changedProjects_dbWriterAdapter == '1' }}
+      steps:
+        - name: Print Outputs
+          run: |
+            echo "${{ needs.check-changes.outputs.changedProjects_dbWriterAdapter }}"
+
+  build-db-writer-common:
+      needs: check-changes
+      runs-on: ubuntu-latest
+      if: ${{ needs.check-changes.outputs.changedProjects_dbWriterCommon == '1' }}
+      steps:
+        - name: Print Outputs
+          run: |
+            echo "${{ needs.check-changes.outputs.changedProjects_dbWriterCommon }}"
