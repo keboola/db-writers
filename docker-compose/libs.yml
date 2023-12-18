@@ -38,7 +38,8 @@ services:
       - ../libs/db-writer-config:/code
       - ../libs/db-writer-config/data:/data
 
-  dev-db-writer-common:
+  app-db-writer-common: &db-writer-common
+    image: keboola/db-writer-common
     build:
       context: ..
       target: lib-db-writer-common
@@ -46,7 +47,6 @@ services:
         - PHP_VERSION=8.2
     volumes:
       - ssh-keys:/root/.ssh:ro
-      - ../libs/db-writer-common:/code
     environment:
       COMMON_DB_USER: root
       COMMON_DB_PASSWORD: somePassword
@@ -56,3 +56,10 @@ services:
     depends_on:
       - sshproxy
       - mysql
+
+  dev-db-writer-common:
+    <<: *db-writer-common
+    volumes:
+      - ssh-keys:/root/.ssh:ro
+      - ../libs/db-writer-common:/code
+      - ../libs/db-writer-common/data:/data
