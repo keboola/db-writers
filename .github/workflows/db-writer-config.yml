@@ -10,15 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build
+      - name: Build and export
         run: |
             docker build --target lib-db-writer-config -t ${APP_IMAGE} .
-      - name: Build and export
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          tags: ${APP_IMAGE}:latest
-          outputs: type=docker,dest=/tmp/imageContainer.tar
+            docker save ${APP_IMAGE} -o /tmp/imageContainer.tar
       - name: Upload image to artifact
         uses: actions/upload-artifact@v3
         with:
