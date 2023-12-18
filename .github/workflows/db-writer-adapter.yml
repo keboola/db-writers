@@ -43,4 +43,5 @@ jobs:
         run: docker load -i /tmp/db-writer-adapter.tar
       - name: Test
         run: |
+          docker-compose run wait-mariadb
           docker-compose run --rm app-db-writer-adapter composer ci
