@@ -13,11 +13,10 @@ jobs:
       - name: Build
         run: |
             docker build --target lib-db-writer-config -t $APP_IMAGE .
-      # upload image to artifact
       - name: Upload image to artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.APP_IMAGE }}
+          name: imageContainer
           path: ./
         
   test:
@@ -30,14 +29,14 @@ jobs:
         with:
           version: latest
           legacy: true
-      - name: Download image from artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: ${{ env.APP_IMAGE }}
       - name: Docker version
         run: docker -v
       - name: Docker-compose version
         run: docker-compose -v
+      - name: Download image from artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: imageContainer
       - name: Test
         run: |
           docker-compose run --rm dev-db-writer-config composer ci
