@@ -20,13 +20,16 @@ services:
       - ../libs/db-writer-adapter:/code
       - ../libs/db-writer-adapter/data:/data
 
-  dev-db-writer-config:
+  app-db-writer-config: &db-writer-config
     image: keboola/db-writer-config
     build:
       context: ..
       target: lib-db-writer-config
       args:
         - PHP_VERSION=8.2
+
+  dev-db-writer-config:
+    <<: *db-writer-config
     volumes:
       - ../libs/db-writer-config:/code
       - ../libs/db-writer-config/data:/data

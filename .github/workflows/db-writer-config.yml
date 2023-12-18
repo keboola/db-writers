@@ -43,4 +43,4 @@ jobs:
         run: docker load -i /tmp/imageContainer.tar
       - name: Test
         run: |
-          docker-compose run --rm dev-db-writer-config composer ci
+          docker-compose run --rm app-db-writer-config composer ci
