@@ -1,21 +1,29 @@
 {
-  "name": "keboola/db-writer-common",
+  "name": "keboola/db-writers-db-writer-common",
   "license": "MIT",
   "type": "library",
   "description": "Keboola Database Writer Common Library",
   "keywords": ["keboola", "database", "db", "writer", "library"],
+  "prefer-stable": true,
+  "minimum-stability": "stable",
   "authors": [
     {
       "name": "Keboola",
       "email": "devel@keboola.com"
     }
   ],
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../../libs/*"
+    }
+  ],
   "require": {
     "php": "^8.2",
     "ext-json": "*",
     "ext-pdo": "*",
-    "keboola/db-writer-adapter": "dev-ondra-init-adapter",
-    "keboola/db-writer-config": "dev-ondra-init-config",
+    "keboola/db-writers-db-writer-adapter": "*@dev",
+    "keboola/db-writers-db-writer-config": "*@dev",
     "keboola/php-component": "^9.4",
     "keboola/retry": "^0.5.1",
     "keboola/ssh-tunnel": "^2.0"
@@ -60,6 +68,9 @@
     ]
   },
   "config": {
+    "preferred-install": {
+      "*": "dist"
+    },
     "sort-packages": true,
     "optimize-autoloader": true,
     "allow-plugins": {

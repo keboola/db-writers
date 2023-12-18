@@ -1,11 +1,17 @@
 {
-    "name": "keboola/db-writer-adapter",
+    "name": "keboola/db-writers-db-writer-adapter",
     "description": "MyComponent description",
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../libs/*"
+        }
+    ],
     "require": {
         "php": "^8.2",
         "ext-mbstring": "*",
-        "keboola/db-writer-config": "dev-ondra-init-config",
+        "keboola/db-writers-db-writer-config": "*@dev",
         "keboola/php-component": "^9.0",
         "keboola/retry": "^0.5.1",
         "psr/log": "^1.1"

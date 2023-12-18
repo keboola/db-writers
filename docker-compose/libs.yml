@@ -8,6 +8,8 @@ services:
       target: lib-db-writer-adapter
       args:
         - PHP_VERSION=8.2
+    volumes:
+      - ../db-writer-config/:/code/libs/db-writer-config
     environment:
       DB_USER: root
       DB_PASSWORD: somePassword
@@ -21,7 +23,7 @@ services:
   dev-db-writer-adapter:
     <<: *db-writer-adapter
     volumes:
-      - ../libs/db-writer-adapter:/code
+      - ../:/code
       - ../libs/db-writer-adapter/data:/data
 
   app-db-writer-config: &db-writer-config
@@ -31,11 +33,13 @@ services:
       target: lib-db-writer-config
       args:
         - PHP_VERSION=8.2
+    volumes:
+      - ../:/code
 
   dev-db-writer-config:
     <<: *db-writer-config
     volumes:
-      - ../libs/db-writer-config:/code
+      - ../:/code
       - ../libs/db-writer-config/data:/data
 
   app-db-writer-common: &db-writer-common
@@ -46,6 +50,8 @@ services:
       args:
         - PHP_VERSION=8.2
     volumes:
+      - ../db-writer-adapter/:/code/libs/db-writer-adapter
+      - ../db-writer-config/:/code/libs/db-writer-config
       - ssh-keys:/root/.ssh:ro
     environment:
       COMMON_DB_USER: root
@@ -61,5 +67,5 @@ services:
     <<: *db-writer-common
     volumes:
       - ssh-keys:/root/.ssh:ro
-      - ../libs/db-writer-common:/code
+      - ../:/code
       - ../libs/db-writer-common/data:/data

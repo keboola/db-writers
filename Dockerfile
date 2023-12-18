@@ -12,8 +12,9 @@ ENV COMPOSER_PROCESS_TIMEOUT 3600
 
 FROM base AS lib-db-writer-config
 ENV APP_NAME=db-writer-config
+ENV APP_HOME=/code/libs/${APP_NAME}
 
-WORKDIR /code/
+WORKDIR ${APP_HOME}
 
 COPY libs/${APP_NAME}/docker/php-prod.ini /usr/local/etc/php/php.ini
 COPY docker/composer-install.sh /tmp/composer-install.sh
@@ -34,13 +35,13 @@ ENV LC_ALL=en_US.UTF-8
 
 ## Composer - deps always cached unless changed
 # First copy only composer files
-COPY libs/${APP_NAME}/composer.* /code/
+COPY libs/${APP_NAME}/composer.* .
 
 # Download dependencies, but don't run scripts or init autoloaders as the app is missing
 RUN composer install $COMPOSER_FLAGS --no-scripts --no-autoloader
 
 # Copy rest of the app
-COPY libs/${APP_NAME}/. /code/
+COPY libs/${APP_NAME}/. .
 
 # Run normal composer - all deps are cached already
 RUN composer install $COMPOSER_FLAGS
@@ -48,9 +49,11 @@ RUN composer install $COMPOSER_FLAGS
 CMD ["php", "/code/src/run.php"]
 
 FROM base AS lib-db-writer-adapter
+ARG COMPOSER_MIRROR_PATH_REPOS=1
 ENV APP_NAME=db-writer-adapter
+ENV APP_HOME=/code/libs/${APP_NAME}
 
-WORKDIR /code/
+WORKDIR ${APP_HOME}
 
 COPY libs/${APP_NAME}/docker/php-prod.ini /usr/local/etc/php/php.ini
 COPY docker/composer-install.sh /tmp/composer-install.sh
@@ -94,13 +97,14 @@ RUN set -ex; \
 
 ## Composer - deps always cached unless changed
 # First copy only composer files
-COPY libs/${APP_NAME}/composer.* /code/
+COPY libs/${APP_NAME}/composer.* ${APP_HOME}
 
 # Download dependencies, but don't run scripts or init autoloaders as the app is missing
-RUN composer install $COMPOSER_FLAGS --no-scripts --no-autoloader
+RUN --mount=type=bind,source=libs/db-writer-config,target=/code/libs/db-writer-config \
+    composer install $COMPOSER_FLAGS --no-scri  pts --no-autoloader
 
 # Copy rest of the app
-COPY libs/${APP_NAME}/. /code/
+COPY libs/${APP_NAME} ${APP_HOME}
 
 # Run normal composer - all deps are cached already
 RUN composer install $COMPOSER_FLAGS
@@ -109,8 +113,10 @@ CMD ["composer", "ci"]
 
 FROM base AS lib-db-writer-common
 ENV APP_NAME=db-writer-common
+ARG COMPOSER_MIRROR_PATH_REPOS=1
+ENV APP_HOME=/code/libs/${APP_NAME}
 
-WORKDIR /code/
+WORKDIR ${APP_HOME}
 
 COPY libs/${APP_NAME}/docker/php-prod.ini /usr/local/etc/php/php.ini
 COPY docker/composer-install.sh /tmp/composer-install.sh
@@ -143,13 +149,15 @@ RUN docker-php-ext-configure intl \
 
 ## Composer - deps always cached unless changed
 # First copy only composer files
-COPY libs/${APP_NAME}/composer.* /code/
+COPY libs/${APP_NAME}/composer.* ./
 
 # Download dependencies, but don't run scripts or init autoloaders as the app is missing
-RUN composer install $COMPOSER_FLAGS --no-scripts --no-autoloader
+RUN --mount=type=bind,source=libs/db-writer-adapter,target=/code/libs/db-writer-adapter \
+    --mount=type=bind,source=libs/db-writer-config,target=/code/libs/db-writer-config \
+    composer install $COMPOSER_FLAGS --no-scripts --no-autoloader
 
 # Copy rest of the app
-COPY libs/${APP_NAME}/. /code/
+COPY libs/${APP_NAME} ./
 
 # Run normal composer - all deps are cached already
 RUN composer install $COMPOSER_FLAGS

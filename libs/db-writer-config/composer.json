@@ -1,5 +1,5 @@
 {
-    "name": "keboola/db-writer-config",
+    "name": "keboola/db-writers-db-writer-config",
     "description": "Config definition for database writer component",
     "authors": [
         {
