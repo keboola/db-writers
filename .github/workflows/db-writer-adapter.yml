@@ -1,9 +1,9 @@
-name: Build and Test DB Writer Config
+name: Build and Test DB Writer Adapter
 on:
   workflow_call:
 
 env:
-  APP_IMAGE: keboola/db-writer-config
+  APP_IMAGE: keboola/db-writer-adapter
 
 jobs:
   build:
@@ -12,13 +12,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build and export
         run: |
-            docker build --target lib-db-writer-config -t ${APP_IMAGE} .
-            docker save ${APP_IMAGE} -o /tmp/db-writer-config.tar
+            docker build --target lib-db-writer-adapter -t ${APP_IMAGE} .
+            docker save ${APP_IMAGE} -o /tmp/db-writer-adapter.tar
       - name: Upload image to artifact
         uses: actions/upload-artifact@v4
         with:
-          name: db-writer-config
-          path: /tmp/db-writer-config.tar
+          name: imageContainerDbWriterAdapter
+          path: /tmp/db-writer-adapter.tar
         
   test:
     runs-on: ubuntu-latest
@@ -37,10 +37,10 @@ jobs:
       - name: Download image from artifact
         uses: actions/download-artifact@v4
         with:
-          name: db-writer-config
+          name: imageContainerDbWriterAdapter
           path: /tmp
       - name: Load image
-        run: docker load -i /tmp/db-writer-config.tar
+        run: docker load -i /tmp/db-writer-adapter.tar
       - name: Test
         run: |
-          docker-compose run --rm app-db-writer-config composer ci
+          docker-compose run --rm app-db-writer-adapter composer ci

@@ -27,3 +27,8 @@ jobs:
       needs: check-changes
       if: ${{ needs.check-changes.outputs.changedProjects_dbWriterConfig == '1' }}
       uses: ./.github/workflows/db-writer-config.yml
+
+  db-writer-adapter:
+    needs: check-changes
+    if: ${{ needs.check-changes.outputs.changedProjects_dbWriterAdapter == '1' }}
+    uses: ./.github/workflows/db-writer-adapter.yml

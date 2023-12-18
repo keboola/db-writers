@@ -1,7 +1,8 @@
 version: '3.8'
 
 services:
-  dev-db-writer-adapter:
+  app-db-writer-adapter: &db-writer-adapter
+    image: keboola/db-writer-adapter
     build:
       context: ..
       target: lib-db-writer-adapter
@@ -16,6 +17,9 @@ services:
     depends_on:
       - mariadb
       - toxiproxy
+
+  dev-db-writer-adapter:
+    <<: *db-writer-adapter
     volumes:
       - ../libs/db-writer-adapter:/code
       - ../libs/db-writer-adapter/data:/data
