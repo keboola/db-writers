@@ -13,6 +13,7 @@ ENV COMPOSER_PROCESS_TIMEOUT 3600
 FROM base AS lib-db-writer-config
 ENV APP_NAME=db-writer-config
 ENV APP_HOME=/code/libs/${APP_NAME}
+ARG COMPOSER_MIRROR_PATH_REPOS=1
 
 WORKDIR ${APP_HOME}
 
@@ -35,13 +36,13 @@ ENV LC_ALL=en_US.UTF-8
 
 ## Composer - deps always cached unless changed
 # First copy only composer files
-COPY libs/${APP_NAME}/composer.* .
+COPY libs/${APP_NAME}/composer.* ./
 
 # Download dependencies, but don't run scripts or init autoloaders as the app is missing
 RUN composer install $COMPOSER_FLAGS --no-scripts --no-autoloader
 
 # Copy rest of the app
-COPY libs/${APP_NAME}/. .
+COPY libs/${APP_NAME} ./
 
 # Run normal composer - all deps are cached already
 RUN composer install $COMPOSER_FLAGS
@@ -97,14 +98,14 @@ RUN set -ex; \
 
 ## Composer - deps always cached unless changed
 # First copy only composer files
-COPY libs/${APP_NAME}/composer.* ${APP_HOME}
+COPY libs/${APP_NAME}/composer.* ./
 
 # Download dependencies, but don't run scripts or init autoloaders as the app is missing
 RUN --mount=type=bind,source=libs/db-writer-config,target=/code/libs/db-writer-config \
-    composer install $COMPOSER_FLAGS --no-scri  pts --no-autoloader
+    composer install $COMPOSER_FLAGS --no-scripts --no-autoloader
 
 # Copy rest of the app
-COPY libs/${APP_NAME} ${APP_HOME}
+COPY libs/${APP_NAME} ./
 
 # Run normal composer - all deps are cached already
 RUN composer install $COMPOSER_FLAGS

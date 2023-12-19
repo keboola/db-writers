@@ -4,6 +4,8 @@ concurrency: ci-${{ github.ref }} # to avoid tag collisions in the ECR
 
 env:
   BRANCH_NAME: ${{ startsWith(github.event_name, 'pull_request') && github.head_ref || github.ref_name }}
+  DOCKERHUB_USER: keboolabot
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
 jobs:
   check-changes:
@@ -27,13 +29,25 @@ jobs:
       needs: check-changes
       if: ${{ needs.check-changes.outputs.changedProjects_dbWriterConfig == '1' }}
       uses: ./.github/workflows/db-writer-config.yml
+      with:
+        dockerhub-user: ${{ env.DOCKERHUB_USER }}
+      secrets:
+        dockerhub-token: ${{ env.DOCKERHUB_TOKEN }}
 
   db-writer-adapter:
     needs: check-changes
     if: ${{ needs.check-changes.outputs.changedProjects_dbWriterAdapter == '1' }}
     uses: ./.github/workflows/db-writer-adapter.yml
+    with:
+      dockerhub-user: ${{ env.DOCKERHUB_USER }}
+    secrets:
+      dockerhub-token: ${{ env.DOCKERHUB_TOKEN }}
 
   db-writer-common:
     needs: check-changes
     if: ${{ needs.check-changes.outputs.changedProjects_dbWriterCommon == '1' }}
     uses: ./.github/workflows/db-writer-common.yml
+    with:
+      dockerhub-user: ${{ env.DOCKERHUB_USER }}
+    secrets:
+      dockerhub-token: ${{ env.DOCKERHUB_TOKEN }}

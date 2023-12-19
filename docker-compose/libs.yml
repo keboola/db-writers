@@ -9,7 +9,7 @@ services:
       args:
         - PHP_VERSION=8.2
     volumes:
-      - ../db-writer-config/:/code/libs/db-writer-config
+      - ../libs/db-writer-config/:/code/libs/db-writer-config
     environment:
       DB_USER: root
       DB_PASSWORD: somePassword
@@ -23,8 +23,7 @@ services:
   dev-db-writer-adapter:
     <<: *db-writer-adapter
     volumes:
-      - ../:/code
-      - ../libs/db-writer-adapter/data:/data
+      - ../libs/db-writer-config/:/code/libs/db-writer-config
 
   app-db-writer-config: &db-writer-config
     image: keboola/db-writer-config
@@ -33,8 +32,6 @@ services:
       target: lib-db-writer-config
       args:
         - PHP_VERSION=8.2
-    volumes:
-      - ../:/code
 
   dev-db-writer-config:
     <<: *db-writer-config
@@ -50,8 +47,8 @@ services:
       args:
         - PHP_VERSION=8.2
     volumes:
-      - ../db-writer-adapter/:/code/libs/db-writer-adapter
-      - ../db-writer-config/:/code/libs/db-writer-config
+      - ../libs/db-writer-adapter/:/code/libs/db-writer-adapter
+      - ../libs/db-writer-config/:/code/libs/db-writer-config
       - ssh-keys:/root/.ssh:ro
     environment:
       COMMON_DB_USER: root

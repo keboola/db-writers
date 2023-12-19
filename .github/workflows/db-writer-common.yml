@@ -1,6 +1,13 @@
 name: Build and Test DB Writer Common
 on:
   workflow_call:
+    inputs:
+      dockerhub-user:
+        type: string
+        required: true
+    secrets:
+      dockerhub-token:
+        required: true
 
 env:
   APP_IMAGE: keboola/db-writer-common
@@ -10,6 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: 'Docker login'
+        if: ${{secrets.dockerhub-token}}
+        run: 'docker login --username "${{secrets.dockerhub-user}}" --password "${{secrets.dockerhub-token}}"'
       - name: Build and export
         run: |
             docker build --target lib-db-writer-common -t ${APP_IMAGE} .
