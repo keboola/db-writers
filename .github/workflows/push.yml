@@ -31,7 +31,6 @@ jobs:
       uses: ./.github/workflows/db-writer-config.yml
       with:
         dockerhub-user: $DOCKERHUB_USER
-      secrets:
         dockerhub-token: $DOCKERHUB_TOKEN
 
   db-writer-adapter:
@@ -40,7 +39,6 @@ jobs:
     uses: ./.github/workflows/db-writer-adapter.yml
     with:
       dockerhub-user: $DOCKERHUB_USER
-    secrets:
       dockerhub-token: $DOCKERHUB_TOKEN
 
   db-writer-common:
@@ -49,5 +47,4 @@ jobs:
     uses: ./.github/workflows/db-writer-common.yml
     with:
       dockerhub-user: $DOCKERHUB_USER
-    secrets:
       dockerhub-token: $DOCKERHUB_TOKEN

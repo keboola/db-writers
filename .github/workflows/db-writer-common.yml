@@ -5,8 +5,8 @@ on:
       dockerhub-user:
         type: string
         required: true
-    secrets:
       dockerhub-token:
+        type: string
         required: true
 
 env:
@@ -18,8 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: 'Docker login'
-        if: $dockerhub-token
-        run: docker login --username "$dockerhub-user" --password "$dockerhub-token"
+        if: inputs.dockerhub-token
+        run: docker login --username "${{ inputs.dockerhub-user }}" --password "${{ inputs.dockerhub-token }}"
       - name: Build and export
         run: |
             docker build --target lib-db-writer-common -t ${APP_IMAGE} .
