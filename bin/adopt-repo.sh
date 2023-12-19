@@ -15,6 +15,7 @@ fi
 REPO_URL=$1
 LOCAL_PATH=$2
 TAG_PREFIX=$3
+REPO_TAG=$4
 
 REPO_NAME=${REPO_URL}
 REPO_NAME=${REPO_NAME##*/} # keep only last path element git@github.com:keboola/job-queue-api.git -> job-queue-api.git
@@ -50,8 +51,8 @@ return b'refs/tags/${TAG_PREFIX}' + refname[len(b'refs/tags/'):]
 
 echo "=> Merging to monorepo"
 git remote add "${REPO_NAME}" "${REPO_PATH}"
-git fetch "${REPO_NAME}"
-git merge --allow-unrelated-histories -m "Merge ${REPO_NAME} to monorepo" "${REPO_NAME}/main"
+git fetch "${REPO_NAME}" "${REPO_TAG}"
+git merge --allow-unrelated-histories -m "Merge ${REPO_NAME} to monorepo" "${REPO_NAME}/${REPO_TAG}"
 
 echo "=> Clean-up"
 rm -rf "${REPO_PATH}"

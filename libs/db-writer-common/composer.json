@@ -1,0 +1,80 @@
+{
+  "name": "keboola/db-writers-db-writer-common",
+  "license": "MIT",
+  "type": "library",
+  "description": "Keboola Database Writer Common Library",
+  "keywords": ["keboola", "database", "db", "writer", "library"],
+  "prefer-stable": true,
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Keboola",
+      "email": "devel@keboola.com"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../../libs/*"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "ext-json": "*",
+    "ext-pdo": "*",
+    "keboola/db-writers-db-writer-adapter": "*@dev",
+    "keboola/db-writers-db-writer-config": "*@dev",
+    "keboola/php-component": "^9.4",
+    "keboola/retry": "^0.5.1",
+    "keboola/ssh-tunnel": "^2.0"
+  },
+  "require-dev": {
+    "keboola/coding-standard": "^15.0",
+    "keboola/csv": "^4.0",
+    "keboola/datadir-tests": "^5.6",
+    "phpstan/phpstan": "^1.10",
+    "phpunit/phpunit": "^9.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "Keboola\\DbWriter\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Keboola\\DbWriter\\TestsTraits\\": "tests/traits/",
+      "Keboola\\DbWriter\\TestsFunctional\\": "tests/functional/",
+      "Keboola\\DbWriter\\Tests\\": "tests/phpunit/"
+    }
+  },
+  "scripts": {
+    "tests-phpunit": "phpunit --testsuite unit",
+    "tests-datadir": "phpunit --testsuite functional",
+    "tests": [
+      "@tests-phpunit",
+      "@tests-datadir"
+    ],
+    "phpcs": "phpcs -n --ignore=vendor --extensions=php .",
+    "phpcbf": "phpcbf -n --ignore=vendor --extensions=php .",
+    "phpstan": "phpstan analyse ./src ./tests --level=max --no-progress -c phpstan.neon",
+    "build": [
+      "@phpcs",
+      "@phpstan",
+      "@tests"
+    ],
+    "ci": [
+      "@composer validate --no-check-publish --no-check-all",
+      "@build"
+    ]
+  },
+  "config": {
+    "preferred-install": {
+      "*": "dist"
+    },
+    "sort-packages": true,
+    "optimize-autoloader": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer":  true
+    }
+  }
+}

@@ -1,0 +1,50 @@
+name: GitHub Actions CI
+on: [ push ]
+concurrency: ci-${{ github.ref }} # to avoid tag collisions in the ECR
+
+env:
+  BRANCH_NAME: ${{ startsWith(github.event_name, 'pull_request') && github.head_ref || github.ref_name }}
+  DOCKERHUB_USER: "keboolabot"
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      changedProjects_dbWriterConfig: ${{ steps.check_changes.outputs.changedProjects_dbWriterConfig }}
+      changedProjects_dbWriterAdapter: ${{ steps.check_changes.outputs.changedProjects_dbWriterAdapter }}
+      changedProjects_dbWriterCommon: ${{ steps.check_changes.outputs.changedProjects_dbWriterCommon }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for changes
+        id: check_changes
+        run: |
+          bin/ci-find-changes.sh ${{ env.BRANCH_NAME }} \
+            dbWriterConfig:libs/db-writer-config \
+            dbWriterAdapter:libs/db-writer-adapter \
+            dbWriterCommon:libs/db-writer-common
+
+  db-writer-config:
+      needs: check-changes
+      if: ${{ needs.check-changes.outputs.changedProjects_dbWriterConfig == '1' }}
+      uses: ./.github/workflows/db-writer-config.yml
+      with:
+        dockerhub-user: $DOCKERHUB_USER
+        dockerhub-token: $DOCKERHUB_TOKEN
+
+  db-writer-adapter:
+    needs: check-changes
+    if: ${{ needs.check-changes.outputs.changedProjects_dbWriterAdapter == '1' }}
+    uses: ./.github/workflows/db-writer-adapter.yml
+    with:
+      dockerhub-user: $DOCKERHUB_USER
+      dockerhub-token: $DOCKERHUB_TOKEN
+
+  db-writer-common:
+    needs: check-changes
+    if: ${{ needs.check-changes.outputs.changedProjects_dbWriterCommon == '1' }}
+    uses: ./.github/workflows/db-writer-common.yml
+    with:
+      dockerhub-user: $DOCKERHUB_USER
+      dockerhub-token: $DOCKERHUB_TOKEN

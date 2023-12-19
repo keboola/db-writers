@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:11.1
+    environment:
+      MARIADB_DATABASE: testdb
+      MARIADB_ROOT_PASSWORD: somePassword
+
+  mysql:
+    platform: linux/x86_64
+    image: mysql:5.6
+    environment:
+      MYSQL_DATABASE: testdb
+      MYSQL_ROOT_PASSWORD: somePassword
