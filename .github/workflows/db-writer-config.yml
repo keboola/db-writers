@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: 'Docker login'
         if: ${{secrets.dockerhub-token}}
-        run: 'docker login --username "${{secrets.dockerhub-user}}" --password "${{secrets.dockerhub-token}}"'
+        run: 'docker login --username "${{inputs.dockerhub-user}}" --password "${{secrets.dockerhub-token}}"'
       - name: Build and export
         run: |
             docker build --target lib-db-writer-config -t ${APP_IMAGE} .
