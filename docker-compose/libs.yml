@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  app-db-writer-adapter: &db-writer-adapter
+    image: keboola/db-writer-adapter
+    build:
+      context: ..
+      target: lib-db-writer-adapter
+      args:
+        - PHP_VERSION=8.2
+    volumes:
+      - ../libs/db-writer-config/:/code/libs/db-writer-config
+    environment:
+      DB_USER: root
+      DB_PASSWORD: rootpassword
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_DATABASE: testdb
+    depends_on:
+      - mariadb
+      - toxiproxy
+
+  dev-db-writer-adapter:
+    <<: *db-writer-adapter
+    volumes:
+      - ../libs/db-writer-config/:/code/libs/db-writer-config
+
+  app-db-writer-config: &db-writer-config
+    image: keboola/db-writer-config
+    build:
+      context: ..
+      target: lib-db-writer-config
+      args:
+        - PHP_VERSION=8.2
+
+  dev-db-writer-config:
+    <<: *db-writer-config
+    volumes:
+      - ../:/code
+      - ../libs/db-writer-config/data:/data
+
+  app-db-writer-common: &db-writer-common
+    image: keboola/db-writer-common
+    build:
+      context: ..
+      target: lib-db-writer-common
+      args:
+        - PHP_VERSION=8.2
+    volumes:
+      - ../libs/db-writer-adapter/:/code/libs/db-writer-adapter
+      - ../libs/db-writer-config/:/code/libs/db-writer-config
+      - ssh-keys:/root/.ssh:ro
+    environment:
+      COMMON_DB_USER: root
+      COMMON_DB_PASSWORD: rootpassword
+      COMMON_DB_HOST: mysql
+      COMMON_DB_PORT: 3306
+      COMMON_DB_DATABASE: testdb
+    depends_on:
+      - sshproxy
+      - mysql
+
+  dev-db-writer-common:
+    <<: *db-writer-common
+    volumes:
+      - ssh-keys:/root/.ssh:ro
+      - ../:/code
+      - ../libs/db-writer-common/data:/data

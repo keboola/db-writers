@@ -1,0 +1,2 @@
+Unknown table 'testdb.%s'
+Primary key(s) in configuration does NOT match with keys in DB table. Keys in configuration: date Keys in DB table: int

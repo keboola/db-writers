@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:11.1
+    environment:
+      MARIADB_DATABASE: testdb
+      MARIADB_ROOT_PASSWORD: rootpassword
+
+  mysql:
+    image: mysql:${MYSQL_VERSION:-5.7}
+    command: mysqld --local-infile --port=3306 --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: testdb
+      MYSQL_ROOT_PASSWORD: rootpassword
+
+  mysql-ssl:
+    image: mysql:${MYSQL_VERSION:-5.7}
+    command: mysqld --local-infile --port=3306 --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ../apps/db-writer-mysql/docker/ssl/certificates:/ssl-cert
+      - ../apps/db-writer-mysql/docker/mysql-ssl/${MYSQL_VERSION:-5.7}/conf.d:/etc/mysql/conf.d/
+    environment:
+      MYSQL_DATABASE: testdb
+      MYSQL_ROOT_PASSWORD: rootpassword

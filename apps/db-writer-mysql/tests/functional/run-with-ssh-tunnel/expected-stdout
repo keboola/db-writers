@@ -1,0 +1,4 @@
+Creating SSH tunnel to 'sshproxy' on local port '1234'
+Creating PDO connection to "mysql:host=127.0.0.1;port=1234;dbname=testdb".
+Table "simple" created
+Data written to table "simple".
