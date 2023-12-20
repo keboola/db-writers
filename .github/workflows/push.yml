@@ -21,6 +21,9 @@ jobs:
       - run: |
           echo ${GITHUB_HEAD_REF}
           echo ${GITHUB_REF#refs/heads/}
+          echo ${GITHUB_REF##*/}
+          echo ${{ github.base_ref }}
+          echo ${{ github.event.pull_request.base.ref }}
       - name: Check for changes
         id: check_changes
         run: |
