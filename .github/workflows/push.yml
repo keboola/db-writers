@@ -14,6 +14,7 @@ jobs:
       changedProjects_dbWriterConfig: ${{ steps.check_changes.outputs.changedProjects_dbWriterConfig }}
       changedProjects_dbWriterAdapter: ${{ steps.check_changes.outputs.changedProjects_dbWriterAdapter }}
       changedProjects_dbWriterCommon: ${{ steps.check_changes.outputs.changedProjects_dbWriterCommon }}
+      changedProjects_dbWriterMysql: ${{ steps.check_changes.outputs.changedProjects_dbWriterMysql }}
 
     steps:
       - uses: actions/checkout@v4
