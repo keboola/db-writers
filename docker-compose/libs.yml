@@ -12,7 +12,7 @@ services:
       - ../libs/db-writer-config/:/code/libs/db-writer-config
     environment:
       DB_USER: root
-      DB_PASSWORD: somePassword
+      DB_PASSWORD: rootpassword
       DB_HOST: mariadb
       DB_PORT: 3306
       DB_DATABASE: testdb
@@ -52,7 +52,7 @@ services:
       - ssh-keys:/root/.ssh:ro
     environment:
       COMMON_DB_USER: root
-      COMMON_DB_PASSWORD: somePassword
+      COMMON_DB_PASSWORD: rootpassword
       COMMON_DB_HOST: mysql
       COMMON_DB_PORT: 3306
       COMMON_DB_DATABASE: testdb
