@@ -4,10 +4,12 @@
     "type": "project",
     "description": "Keboola MySQL DB Writer",
     "keywords": ["keboola", "mysql", "db", "writer"],
-    "authors": [
+    "prefer-stable": true,
+    "minimum-stability": "stable",
+    "repositories": [
         {
-            "name": "Erik Zigo",
-            "email": "erik.zigo@keboola.com"
+            "type": "path",
+            "url": "../../libs/*"
         }
     ],
     "require": {
@@ -16,9 +18,9 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "keboola/csv": "^3.3",
-        "keboola/db-writer-adapter": "dev-ondra-init-adapter",
-        "keboola/db-writer-common": "dev-ondra-refactoring",
-        "keboola/db-writer-config": "dev-ondra-init-config",
+        "keboola/db-writers-db-writer-adapter": "*@dev",
+        "keboola/db-writers-db-writer-common": "*@dev",
+        "keboola/db-writers-db-writer-config": "*@dev",
         "keboola/php-component": "^9.4",
         "keboola/php-temp": "^2.0",
         "keboola/retry": "^0.5.1",
@@ -67,6 +69,9 @@
         ]
     },
     "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
         "sort-packages": true,
         "optimize-autoloader": true,
         "allow-plugins": {

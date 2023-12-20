@@ -1,4 +1,4 @@
-Creating PDO connection to "mysql:host=mysql;port=3306;dbname=test".
+Creating PDO connection to "mysql:host=mysql;port=3306;dbname=testdb".
 Temporary Table "%s" created
 Data written to table "%s".
 Upserting data into table "incremental"

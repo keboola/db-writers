@@ -3,7 +3,7 @@
     "db": {
       "host": "mysql",
       "port": "3306",
-      "database": "test",
+      "database": "testdb",
       "user": "root",
       "#password": "rootpassword"
     },

@@ -31,13 +31,13 @@ class DatadirTest extends AbstractDatadirTestCase
         array $data = [],
         string $dataName = '',
     ) {
+        $certPath = __DIR__ . '/../../docker/ssl/certificates/';
         putenv('SSH_PRIVATE_KEY=' . file_get_contents('/root/.ssh/id_rsa'));
         putenv('SSH_PUBLIC_KEY=' . file_get_contents('/root/.ssh/id_rsa.pub'));
-        putenv('SSL_CA=' . file_get_contents('/ssl-cert/ca-cert.pem'));
-        putenv('SSL_CERT=' . file_get_contents('/ssl-cert/client-cert.pem'));
-        putenv('SSL_KEY=' . file_get_contents('/ssl-cert/client-key.pem'));
+        putenv('SSL_CA=' . file_get_contents($certPath . 'ca-cert.pem'));
+        putenv('SSL_CERT=' . file_get_contents($certPath . 'client-cert.pem'));
+        putenv('SSL_KEY=' . file_get_contents($certPath . 'client-key.pem'));
         parent::__construct($name, $data, $dataName);
-        $this->connection = MySQLConnectionFactory::create($this->getDatabaseConfig(), new TestLogger());
     }
 
     public function setUp(): void
@@ -82,18 +82,19 @@ class DatadirTest extends AbstractDatadirTestCase
      */
     protected function getDataProviders(): array
     {
+        $connection = MySQLConnectionFactory::create($this->getDatabaseConfig(), new TestLogger());
         return [
-            new DatadirTestProvider($this->getMysqlVersion(), $this->getTestFileDir()),
+            new DatadirTestProvider($this->getMysqlVersion($connection), $this->getTestFileDir()),
         ];
     }
 
-    private function getMysqlVersion(): int
+    private function getMysqlVersion(MySQLConnection $connection): int
     {
         /** @var array{array{
          *     version: string
          * }} $version
          */
-        $version = $this->connection->fetchAll('SELECT VERSION() as version;', 3);
+        $version = $connection->fetchAll('SELECT VERSION() as version;', 3);
         return (int) $version[0]['version'];
     }
 

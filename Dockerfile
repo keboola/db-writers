@@ -163,3 +163,61 @@ COPY libs/${APP_NAME} ./
 # Run normal composer - all deps are cached already
 RUN composer install $COMPOSER_FLAGS
 
+FROM base AS app-db-writer-mysql
+ENV APP_NAME=db-writer-mysql
+ARG COMPOSER_MIRROR_PATH_REPOS=1
+ARG COMPOSER_FLAGS="--prefer-dist --no-interaction"
+ARG DEBIAN_FRONTEND=noninteractive
+ENV APP_HOME=/code/apps/${APP_NAME}
+
+WORKDIR ${APP_HOME}
+
+COPY apps/${APP_NAME}/docker/php-prod.ini /usr/local/etc/php/php.ini
+COPY docker/composer-install.sh /tmp/composer-install.sh
+
+# Deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        git \
+        wget \
+        curl \
+        bzip2 \
+        libzip-dev \
+        openssl \
+        locales \
+        libicu-dev \
+        unzip \
+        ssh \
+	&& rm -r /var/lib/apt/lists/* \
+	&& sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen \
+	&& locale-gen \
+	&& chmod +x /tmp/composer-install.sh \
+	&& /tmp/composer-install.sh
+
+RUN docker-php-ext-configure intl \
+    && docker-php-ext-install intl
+
+# PHP
+RUN docker-php-ext-install pdo pdo_mysql
+
+ENV LANGUAGE=en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+
+## Composer - deps always cached unless changed
+# First copy only composer files
+COPY apps/${APP_NAME}/composer.* ./
+
+# Download dependencies, but don't run scripts or init autoloaders as the app is missing
+RUN --mount=type=bind,source=libs/db-writer-adapter,target=/code/libs/db-writer-adapter \
+    --mount=type=bind,source=libs/db-writer-config,target=/code/libs/db-writer-config \
+    --mount=type=bind,source=libs/db-writer-common,target=/code/libs/db-writer-common \
+    composer install $COMPOSER_FLAGS --no-scripts --no-autoloader
+
+# Copy rest of the app
+COPY apps/${APP_NAME} ./
+
+# Run normal composer - all deps are cached already
+RUN composer install $COMPOSER_FLAGS
+
+CMD ["php", "${APP_HOME}/src/run.php"]
+

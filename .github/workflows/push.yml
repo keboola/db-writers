@@ -23,7 +23,8 @@ jobs:
           bin/ci-find-changes.sh ${{ env.BRANCH_NAME }} \
             dbWriterConfig:libs/db-writer-config \
             dbWriterAdapter:libs/db-writer-adapter \
-            dbWriterCommon:libs/db-writer-common
+            dbWriterCommon:libs/db-writer-common \
+            dbWriterMysql:apps/db-writer-mysql
 
   db-writer-config:
       needs: check-changes
@@ -45,6 +46,15 @@ jobs:
     needs: check-changes
     if: ${{ needs.check-changes.outputs.changedProjects_dbWriterCommon == '1' }}
     uses: ./.github/workflows/db-writer-common.yml
+    with:
+      dockerhub-user: $DOCKERHUB_USER
+      dockerhub-token: $DOCKERHUB_TOKEN
+
+
+  db-writer-mysql:
+    needs: check-changes
+    if: ${{ needs.check-changes.outputs.dbWriterMysql == '1' }}
+    uses: ./.github/workflows/db-writer-mysql.yml
     with:
       dockerhub-user: $DOCKERHUB_USER
       dockerhub-token: $DOCKERHUB_TOKEN

@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  app-db-writer-mysql: &db-writer-mysql
+    image: keboola/db-writer-mysql
+    build:
+      context: ..
+      target: lib-db-writer-mysql
+      args:
+        - PHP_VERSION=8.2
+    environment:
+      DB_HOST: mysql
+      DB_SSL_HOST: mysql-ssl
+      DB_SSL_BAD_CN_HOST: mysql-different-cn
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: rootpassword
+      DB_DATABASE: testdb
+    volumes:
+      - ssh-keys:/root/.ssh
+    links:
+      - mysql
+      - mysql-ssl
+      - mysql-ssl:mysql-different-cn
+      - sshproxy
+    depends_on:
+      - sshproxy
+
+  dev-db-writer-mysql:
+    <<: *db-writer-mysql
+    volumes:
+      - ../apps/db-writer-mysql:/code/apps/db-writer-mysql
+      - ../apps/db-writer-mysql/data:/data
+      - ../libs:/code/libs
+      - ssh-keys:/root/.ssh

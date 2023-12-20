@@ -64,7 +64,7 @@ class WriteAdapterTest extends TestCase
             $logger,
         );
 
-        $adapter = new MySQLWriteAdapter($connection, new MySQLQueryBuilder('utf8mb4'), $logger);
+        $adapter = new MySQLWriteAdapter($connection, new MySQLQueryBuilder('utf8'), $logger);
 
         $adapter->create(
             $exportConfig->getDbName() . '_tmp',
