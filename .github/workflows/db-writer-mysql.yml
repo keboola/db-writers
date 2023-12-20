@@ -12,6 +12,17 @@ on:
 env:
   APP_IMAGE: keboola/db-writer-mysql
 
+  # Developer portal login
+  KBC_DEVELOPERPORTAL_VENDOR: "keboola"
+  KBC_DEVELOPERPORTAL_APP: "keboola.wr-db-mysql"
+  KBC_DEVELOPERPORTAL_USERNAME: "keboola+wr_db_mysql_github_actions"
+  KBC_DEVELOPERPORTAL_PASSWORD: ${{ secrets.KBC_DEVELOPERPORTAL_PASSWORD }}
+
+  # Test KBC project
+  KBC_STORAGE_TOKEN: ${{ secrets.KBC_MYSQL_STORAGE_TOKEN }}
+  KBC_TEST_PROJECT_URL: ""
+  KBC_TEST_PROJECT_CONFIGS: "" # space separated list
+
 jobs:
   build:
     runs-on: ubuntu-latest
