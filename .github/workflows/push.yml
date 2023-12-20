@@ -3,7 +3,6 @@ on: [ push ]
 concurrency: ci-${{ github.ref }} # to avoid tag collisions in the ECR
 
 env:
-  BRANCH_NAME: ${{ startsWith(github.event_name, 'pull_request') && github.event.pull_request.base.ref || github.ref_name }}
   DOCKERHUB_USER: "keboolabot"
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
@@ -21,7 +20,7 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          bin/ci-find-changes.sh ${{ env.BRANCH_NAME }} \
+          bin/ci-find-changes.sh main \
             dbWriterConfig:libs/db-writer-config \
             dbWriterAdapter:libs/db-writer-adapter \
             dbWriterCommon:libs/db-writer-common \
