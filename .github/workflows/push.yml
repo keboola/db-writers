@@ -19,9 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          echo ${{ github.head_ref }}
-          echo ${{ github.ref_name }}
-          echo ${{ github.base_ref }}
+          echo ${GITHUB_HEAD_REF}
+          echo ${GITHUB_REF#refs/heads/}
       - name: Check for changes
         id: check_changes
         run: |
