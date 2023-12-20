@@ -5,7 +5,7 @@ services:
     image: mariadb:11.1
     environment:
       MARIADB_DATABASE: testdb
-      MARIADB_ROOT_PASSWORD: somePassword
+      MARIADB_ROOT_PASSWORD: rootpassword
 
   mysql:
     image: mysql:${MYSQL_VERSION:-5.7}
