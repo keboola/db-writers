@@ -53,7 +53,7 @@ jobs:
 
   db-writer-mysql:
     needs: check-changes
-    if: ${{ needs.check-changes.outputs.dbWriterMysql == '1' }}
+    if: ${{ needs.check-changes.outputs.changedProjects_dbWriterMysql == '1' }}
     uses: ./.github/workflows/db-writer-mysql.yml
     with:
       dockerhub-user: $DOCKERHUB_USER
